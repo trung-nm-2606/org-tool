@@ -1,0 +1,47 @@
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const logger = require('morgan');
+
+const app = express();
+const api = require('./api');
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+
+app.use(logger('dev'));
+app.use(express.urlencoded({ extended: false })); // To parse URL encoded data
+app.use(express.json()); // To parse request json -> req.body
+app.use(cookieParser()); // To parse cookie json -> req.cookies
+app.use(session({secret: `s3cr3t`}));
+
+app.use('/uploads', express.static('uploads'));
+app.use('/public', express.static('public'));
+// app.use(express.static('react-app/build')); // TODO - will use later
+
+app.use('/api', api);
+
+// All not-found routes served by ExpressJs will be directed to ReactJS
+// TODO - will use later
+// app.use((req, res, next) => {
+//   res.sendFile(path.join(__dirname, 'react-app/build/index.html'));
+// });
+
+// catch 404 and forward to error handler
+app.use((req, res, next) => next(createError(404)));
+
+// error handler
+app.use((err, req, res, next) => {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+module.exports = app;
