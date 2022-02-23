@@ -3,6 +3,7 @@ const Response = require('../shared/Response');
 const userRepo = require('../repo/users');
 const encryption = require('../shared/encryption');
 const session = require('../shared/session');
+const mailer = require('../shared/mailer');
 
 const validateEmailPassword = (req, res, next) => {
   const body = req.body;
