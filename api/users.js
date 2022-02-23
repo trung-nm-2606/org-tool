@@ -2,18 +2,26 @@ const express = require('express');
 const Response = require('../shared/Response');
 const userRepo = require('../repo/users');
 const encryption = require('../shared/encryption');
+const session = require('../shared/session');
 
-const signupValidator = async (req, res, next) => {
+const validateEmailPassword = (req, res, next) => {
   const body = req.body;
   const { email, password } = body;
 
   if (!email || !password) {
     const resp = new Response();
     resp.setOperStatus(Response.OperStatus.FAILED);
-    resp.setOperMessage('[Signup]: Invalid email/password');
+    resp.setOperMessage('[Validation]: Invalid email/password');
     res.status(400).json(resp);
     return;
   }
+
+  next();
+};
+
+const signupValidator = async (req, res, next) => {
+  const body = req.body;
+  const { email } = body;
 
   try {
     const user = await userRepo.findUserByEmail(email);
@@ -70,7 +78,73 @@ const signup = async (req, res) => {
   }
 };
 
+const login = async (req, res) => {
+  const body = req.body;
+  const { email, password } = body;
+  const { forForm } = req.query;
+
+  try {
+    const user = await userRepo.findUserByEmail(email);
+    if (user) {
+      const matched = await encryption.compare(password, user.encrypted_password);
+      if (matched) {
+        session.storeAuthenticatedUser(user, req);
+        const resp = new Response();
+        resp.setPayload(true);
+
+        if (forForm === 'true') {
+          res.redirect('/');
+        } else {
+          res.json(resp);
+        }
+      } else {
+        const resp = new Response();
+        resp.setOperStatus(Response.OperStatus.FAILED);
+        resp.setOperMessage(`[Login]: Wrong email/password`);
+        if (forForm === 'true') {
+          res.render('login', resp);
+        } else {
+          res.json(resp);
+        }
+      }
+    } else {
+      const resp = new Response();
+      resp.setOperStatus(Response.OperStatus.FAILED);
+      resp.setOperMessage(`[Login]: User(${email}) not found`);
+      if (forForm === 'true') {
+        res.render('login', resp);
+      } else {
+        res.json(resp);
+      }
+    }
+  } catch (e) {
+    const resp = new Response();
+    resp.setOperStatus(Response.OperStatus.FAILED);
+    resp.setOperMessage('[Login]: Internal Server Error');
+    if (forForm === 'true') {
+      res.render('login', resp);
+    } else {
+      res.status(500).json(resp);
+    }
+  }
+};
+
+const logout = (req, res) => {
+  session.removeAuthenticatedUser(req);
+
+  const { forForm } = req.query;
+  if (forForm === 'true') {
+    res.redirect('/login');
+  } else {
+    const resp = new Response();
+    resp.setPayload(true);
+    res.json(resp);
+  }
+};
+
 const api = express.Router();
-api.post('/signup', signupValidator, signup);
+api.post('/signup', validateEmailPassword, signupValidator, signup);
+api.post('/login', validateEmailPassword, login);
+api.post('/logout', logout);
 
 module.exports = api;
