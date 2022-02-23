@@ -8,8 +8,8 @@ create table users
     email              varchar(150)                                                              not null,
     encrypted_password varchar(64)                                                               not null,
     status             enum ('demo', 'active', 'banned', 'archived') default 'demo'              not null,
-    created_at         datetime                                      default current_timestamp() null,
-    updated_at         datetime                                      default current_timestamp() null,
+    created_at         datetime                                      default current_timestamp() not null,
+    updated_at         datetime                                      default current_timestamp() not null,
     constraint users_email_uindex
         unique (email),
     constraint users_name_uindex
