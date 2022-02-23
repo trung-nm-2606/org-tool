@@ -15,7 +15,7 @@ class MailOption {
     this.from = 'minhtrung2606@gmail.com';
     this.to = to;
     this.subject = subject;
-    this.text = content;
+    this.html = content;
   }
 }
 

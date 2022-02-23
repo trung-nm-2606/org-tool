@@ -51,4 +51,19 @@ repo.updateUser = async (userPk, updateInfo) => {
   }
 };
 
+repo.createUserActivation = async (email, encryptedActivationCode) => {
+  const query = 'insert into user_activations(email, activation_code) values(?,?)';
+  try {
+    const result = await db.query(query, [email, encryptedActivationCode]);
+    if (result.insertId > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    console.log(`[UserRepo]: Cannot create user activation(email=${email}). ${e.message}`);
+    return false;
+  }
+};
+
 module.exports = repo;

@@ -7,6 +7,7 @@ const logger = require('morgan');
 
 const app = express();
 const api = require('./api');
+const ssr = require('./ssr');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -23,6 +24,7 @@ app.use('/public', express.static('public'));
 // app.use(express.static('react-app/build')); // TODO - will use later
 
 app.use('/api', api);
+app.use(ssr);
 
 // All not-found routes served by ExpressJs will be directed to ReactJS
 // TODO - will use later

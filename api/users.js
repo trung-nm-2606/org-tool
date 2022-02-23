@@ -44,6 +44,18 @@ const signupValidator = async (req, res, next) => {
   next();
 };
 
+const createUserActivation = async (email) => {
+  try {
+    const activationCode = `${Math.round(Math.random() * 1E9)}`;
+    const encryptedActivationCode = await encryption.encrypt(activationCode);
+    await userRepo.createUserActivation(email, encryptedActivationCode);
+    const content = `<p>Click <a href="http://localhost:8080/user/activation?c=${activationCode}&email=${email}">this link</a> to activate your account</p>`;
+    await mailer.sendMail(email, 'User Activation', content);
+  } catch (e) {
+    console.log(`[Signup]: Cannot create user activation(email=${email}). ${e.message}`);
+  }
+};
+
 /**
  * This API is used to signup a new user to the system.
  *
@@ -62,6 +74,7 @@ const signup = async (req, res) => {
     const encryptedPassword = await encryption.encrypt(password);
     const success = await userRepo.createUser(email, encryptedPassword);
     if (success) {
+      createUserActivation(email);
       const resp = new Response();
       resp.setPayload({ email, password });
       res.json(resp);
