@@ -90,7 +90,13 @@ const postSignup = async (req, res) => {
   }
 };
 
-const getLogin = (req, res) => res.render('login');
+const getLogin = (req, res) => {
+  if (session.getAuthenticatedUser(req)) {
+    res.redirect('/');
+    return;
+  }
+  res.render('login');
+};
 
 const postLogin = async (req, res) => {
   const body = req.body;

@@ -45,7 +45,7 @@ repo.updateUser = async (userPk, updateInfo) => {
   args.push(userPk);
 
   try {
-    db.query(query, args);
+    await db.query(query, args);
     return true;
   } catch (e) {
     console.log(`[UserRepo]: Cannot update user(pk=${userPk}). ${e.message}`);
@@ -93,7 +93,7 @@ repo.updateUserActivation = async (userActivationPk, updateInfo) => {
   args.push(userActivationPk);
 
   try {
-    db.query(query, args);
+    await db.query(query, args);
     return true;
   } catch (e) {
     console.log(`[UserRepo]: Cannot update user activation(pk=${userActivationPk}). ${e.message}`);

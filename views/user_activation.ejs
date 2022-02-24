@@ -22,9 +22,10 @@
     <%}%>
 
     <% if (oper && oper.status === 'failed' && oper.code === 'UserActivationCode.Cancelled') {%>
-    <p><a>Request activation code</a></p>
+    <p><a href id="renew-user-activation">Request activation code</a></p>
     <%}%>
 
 	  <%- include('./partials/footer'); %>
+    <script src="/public/javascripts/user_activation.js"></script>
   </body>
 </html>
