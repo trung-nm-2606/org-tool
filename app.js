@@ -21,16 +21,15 @@ app.use(session({secret: `s3cr3t`}));
 
 app.use('/uploads', express.static('uploads'));
 app.use('/public', express.static('public'));
-// app.use(express.static('react-app/build')); // TODO - will use later
+app.use(express.static('react-app/build'));
 
 app.use('/api', api);
 app.use(ssr);
 
 // All not-found routes served by ExpressJs will be directed to ReactJS
-// TODO - will use later
-// app.use((req, res, next) => {
-//   res.sendFile(path.join(__dirname, 'react-app/build/index.html'));
-// });
+app.use((req, res, next) => {
+  res.sendFile(path.join(__dirname, 'react-app/build/index.html'));
+});
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => next(createError(404)));

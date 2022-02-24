@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const userSsr = require('./users');
 const userRepo = require('../repo/users');
 const Response = require('../shared/Response');
@@ -152,7 +153,7 @@ ssr.get('/', (req, res) => {
     res.redirect('/login');
     return;
   }
-  res.render('index');
+  res.sendFile(path.join(__dirname, '../react-app/build/index.html'));
 });
 
 module.exports = ssr;
