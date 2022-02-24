@@ -6,6 +6,7 @@ create table user_activations
     email           varchar(150)                                                           not null,
     activation_code varchar(64)                                                            not null,
     retry_count     int                                        default 0                   null,
+    renew_count     int                                        default 0                   not null,
     created_at      datetime                                   default current_timestamp() not null,
     updated_at      datetime                                   default current_timestamp() not null,
     status          enum ('processed', 'pending', 'cancelled') default 'pending'           not null,

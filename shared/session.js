@@ -4,9 +4,9 @@ const session = {};
 
 session.storeAuthenticatedUser = (user, req) => req.session.authenticatedUser = user;
 
-session.getAuthenticatedUser = req => req.authenticatedUser;
+session.getAuthenticatedUser = req => req.session.authenticatedUser;
 
-session.removeAuthenticatedUser = req => req.authenticatedUser = null;
+session.removeAuthenticatedUser = req => req.session.authenticatedUser = null;
 
 session.authenticateUser = (req, res, next) => {
   const { forForm } = req.query;
