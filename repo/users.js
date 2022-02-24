@@ -1,4 +1,5 @@
 const db = require('../shared/db');
+const dateUtils = require('../shared/date_utils');
 
 const repo = {};
 
@@ -39,7 +40,8 @@ repo.updateUser = async (userPk, updateInfo) => {
     args.push(updateInfo[key]);
   }
   const updateFields = fields.join(',')
-  const query = `update users set ${updateFields} where pk = ?`;
+  const query = `update users set ${updateFields}, updated_at = ? where pk = ?`;
+  args.push(dateUtils.getMariaDbCurrentTimestamp());
   args.push(userPk);
 
   try {
@@ -62,6 +64,39 @@ repo.createUserActivation = async (email, encryptedActivationCode) => {
     }
   } catch (e) {
     console.log(`[UserRepo]: Cannot create user activation(email=${email}). ${e.message}`);
+    return false;
+  }
+};
+
+repo.findUserActivationByEmail = async (email) => {
+  const query = 'select ua.*, users.pk as user_pk from user_activations as ua left join users on ua.email = users.email  where ua.email = ?';
+  try {
+    const userActivations = await db.query(query, [email]);
+    return userActivations[0];
+  } catch (e) {
+    console.log(`[UserRepo]: Cannot find user activation(email=${email}). ${e.message}`);
+    return null;
+  }
+};
+
+repo.updateUserActivation = async (userActivationPk, updateInfo) => {
+  const fields = [];
+  const args = [];
+  for (let key in updateInfo) {
+    const field = FIELD_MAPPINGS[key] || key;
+    fields.push(`${field}=COALESCE(?, ${field})`);
+    args.push(updateInfo[key]);
+  }
+  const updateFields = fields.join(',')
+  const query = `update user_activations set ${updateFields}, updated_at = ? where pk = ?`;
+  args.push(dateUtils.getMariaDbCurrentTimestamp());
+  args.push(userActivationPk);
+
+  try {
+    db.query(query, args);
+    return true;
+  } catch (e) {
+    console.log(`[UserRepo]: Cannot update user activation(pk=${userActivationPk}). ${e.message}`);
     return false;
   }
 };

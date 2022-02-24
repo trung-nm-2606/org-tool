@@ -1,11 +1,7 @@
 const express = require('express');
+const userSsr = require('./users');
 
-const api = express.Router();
+const ssr = express.Router();
+ssr.use('/users', userSsr);
 
-const userActivation = (req, res) => {
-  res.render('user_activation', { title: 'User Activation' });
-};
-
-api.get('/user/activation', userActivation);
-
-module.exports = api;
+module.exports = ssr;
