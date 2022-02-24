@@ -2,7 +2,8 @@ class Response {
   constructor() {
     this.oper = {
       status: 'success',
-      message: null
+      message: null,
+      code: null
     };
     this.payload = null;
   }
@@ -13,6 +14,10 @@ class Response {
 
   setOperMessage(message = null) {
     this.oper.message = message;
+  }
+
+  setOperStatusCode(code = null) {
+    this.oper.code = code;
   }
 
   setPayload(payload = null) {

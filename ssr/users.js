@@ -1,7 +1,16 @@
 const express = require('express');
-response = require('../shared/Response');
+const Response = require('../shared/Response');
 const userRepo = require('../repo/users');
 const encryption = require('../shared/encryption');
+
+const userActivationValidator = (req, res, next) => {
+  const { c: activationCode, email } = req.query;
+  if (!activationCode || !email) {
+    res.redirect('/login');
+  }
+
+  next();
+};
 
 const userActivation = async (req, res) => {
   const { c: activationCode, email } = req.query;
@@ -13,6 +22,7 @@ const userActivation = async (req, res) => {
       resp = new Response();
       resp.setOperStatus(Response.OperStatus.FAILED);
       resp.setOperMessage('[UserActivation]: Cannot proceed user activation');
+      resp.setOperStatusCode('UserActivationCode.NotFound');
       res.render('user_activation', { title: 'User Activation', ...resp });
       return;
     }
@@ -21,6 +31,7 @@ const userActivation = async (req, res) => {
       resp = new Response();
       resp.setOperStatus(Response.OperStatus.SUCCESS);
       resp.setOperMessage('[UserActivation]: Your account was already activated');
+      resp.setOperStatusCode('UserActivationCode.Processed');
       res.render('user_activation', { title: 'User Activation', ...resp });
       return;
     }
@@ -29,6 +40,7 @@ const userActivation = async (req, res) => {
       resp = new Response();
       resp.setOperStatus(Response.OperStatus.FAILED);
       resp.setOperMessage('[UserActivation]: Expired user activation code');
+      resp.setOperStatusCode('UserActivationCode.Cancelled');
       res.render('user_activation', { title: 'User Activation', ...resp });
       return;
     }
@@ -42,6 +54,7 @@ const userActivation = async (req, res) => {
       resp = new Response();
       resp.setOperStatus(Response.OperStatus.FAILED);
       resp.setOperMessage('[UserActivation]: Expired user activation code');
+      resp.setOperStatusCode('UserActivationCode.Cancelled');
       res.render('user_activation', { title: 'User Activation', ...resp });
       return;
     }
@@ -51,7 +64,8 @@ const userActivation = async (req, res) => {
       await userRepo.updateUserActivation(userActivation.pk, { retry_count: userActivation.retry_count + 1 });
       resp = new Response();
       resp.setOperStatus(Response.OperStatus.FAILED);
-      resp.setOperMessage('[UserActivation]: Wrong ser activation code');
+      resp.setOperMessage('[UserActivation]: Wrong user activation code');
+      resp.setOperStatusCode('UserActivationCode.Mismatched');
       res.render('user_activation', { title: 'User Activation', ...resp });
       return;
     }
@@ -67,6 +81,7 @@ const userActivation = async (req, res) => {
     resp = new Response();
     resp.setOperStatus(Response.OperStatus.SUCCESS);
     resp.setOperMessage('[UserActivation]: Your account is activated successfully');
+    resp.setOperStatusCode('UserActivationCode.Processed');
     res.render('user_activation', { title: 'User Activation', ...resp });
   } catch (e) {
     const resp = new Response();
@@ -77,6 +92,6 @@ const userActivation = async (req, res) => {
 };
 
 const ssr = express.Router();
-ssr.get('/activation', userActivation);
+ssr.get('/activation', userActivationValidator, userActivation);
 
 module.exports = ssr;

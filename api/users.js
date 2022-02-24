@@ -5,7 +5,7 @@ const encryption = require('../shared/encryption');
 const session = require('../shared/session');
 const mailer = require('../shared/mailer');
 
-const validateEmailPassword = (req, res, next) => {
+const emailPasswordValidator = (req, res, next) => {
   const body = req.body;
   const { email, password } = body;
 
@@ -181,8 +181,8 @@ const update = async (req, res) => {
 };
 
 const api = express.Router();
-api.post('/signup', validateEmailPassword, signupValidator, signup);
-api.post('/login', validateEmailPassword, login);
+api.post('/signup', emailPasswordValidator, signupValidator, signup);
+api.post('/login', emailPasswordValidator, login);
 api.post('/logout', logout);
 api.post('/:userPk/update', session.authenticateUser, update);
 

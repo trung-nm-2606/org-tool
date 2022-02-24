@@ -4,7 +4,27 @@
     <%- include('./partials/head'); %>
   </head>
   <body>
+    <% if (!oper) {%>
     <h1>Activating...</h1>
+    <%}%>
+
+    <% if (oper) {%>
+    <h1>User activation <%= oper.status %></h1>
+    <p><%= oper.message %></p>
+    <%}%>
+
+    <% if (oper && oper.status === 'success' && oper.code === 'UserActivationCode.Processed') {%>
+    <p>Try <a href="/login">Login</a></p>
+    <%}%>
+
+    <% if (oper && oper.status === 'failed' && oper.code === 'UserActivationCode.Mismatched') {%>
+    <p>Try again from your email or <a href="" onclick="location.reload">reload the page</a></p>
+    <%}%>
+
+    <% if (oper && oper.status === 'failed' && oper.code === 'UserActivationCode.Cancelled') {%>
+    <p><a>Request activation code</a></p>
+    <%}%>
+
 	  <%- include('./partials/footer'); %>
   </body>
 </html>
