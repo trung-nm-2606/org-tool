@@ -1,6 +1,13 @@
+import React from 'react';
+import { BrowserRouter } from "react-router-dom";
+import AppRoutes from "./AppRoutes";
+
 function App() {
   return (
-    <h1>Organization Tools</h1>
+    <BrowserRouter>
+      <h1>Organization Tools</h1>
+      <AppRoutes />
+    </BrowserRouter>
   );
 }
 
