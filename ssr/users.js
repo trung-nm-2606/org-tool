@@ -7,9 +7,9 @@ const mailer = require('../shared/mailer');
 const createUserActivation = async (email) => {
   try {
     const activationCode = `${Math.round(Math.random() * 1E9)}`;
-    const encryptedActivationCode = await encryption.encrypt(activationCode);
-    await userRepo.createUserActivation(email, encryptedActivationCode);
-    const content = `<p>Click <a href="http://localhost:8080/users/activation?c=${activationCode}&email=${email}">this link</a> to activate your account</p>`;
+    const activationToken = encryption.createActivationToken({ email }, activationCode);
+    await userRepo.createUserActivation(email, activationCode);
+    const content = `<p>Click <a href="http://localhost:8080/users/activation?token=${activationToken}&email=${email}">this link</a> to activate your account</p>`;
     await mailer.sendMail(email, 'User Activation', content);
     return true;
   } catch (e) {
@@ -22,10 +22,10 @@ const renewUserActivation = async (userActivation) => {
   let success;
   try {
     const activationCode = `${Math.round(Math.random() * 1E9)}`;
-    const encryptedActivationCode = await encryption.encrypt(activationCode);
+    const activationToken = encryption.createActivationToken({ email: userActivation.email }, activationCode);
 
     success = await userRepo.updateUserActivation(userActivation.pk, {
-      activation_code: encryptedActivationCode,
+      activation_code: activationCode,
       retry_count: 0,
       status: 'pending',
       renew_count: userActivation.renew_count + 1
@@ -36,7 +36,7 @@ const renewUserActivation = async (userActivation) => {
       return false;
     }
 
-    const content = `<p>Click <a href="http://localhost:8080/users/activation?c=${activationCode}&email=${userActivation.email}">this link</a> to activate your account</p>`;
+    const content = `<p>Click <a href="http://localhost:8080/users/activation?token=${activationToken}&email=${userActivation.email}">this link</a> to activate your account</p>`;
     success = await mailer.sendMail(userActivation.email, 'User Activation - Renew', content);
 
     if (!success) {
@@ -46,14 +46,14 @@ const renewUserActivation = async (userActivation) => {
 
     return true;
   } catch (e) {
-    console.log(`[UserActivation.Renew]: Cannot update user activation(email=${userActivation.email})`);
+    console.log(`[UserActivation.Renew]: Cannot update user activation(email=${userActivation.email}). ${e.message}`);
     return false;
   }
 };
 
 const userActivationValidator = (req, res, next) => {
-  const { c: activationCode, email } = req.query;
-  if (!activationCode || !email) {
+  const { token, email } = req.query;
+  if (!token || !email) {
     res.redirect('/login');
   }
 
@@ -61,7 +61,7 @@ const userActivationValidator = (req, res, next) => {
 };
 
 const userActivation = async (req, res) => {
-  const { c: activationCode, email } = req.query;
+  const { token, email } = req.query;
   try {
     let resp;
     let success;
@@ -107,7 +107,8 @@ const userActivation = async (req, res) => {
       return;
     }
 
-    const matched = await encryption.compare(activationCode, userActivation.activation_code);
+    const { email: uEmail } = encryption.verifyActivationToken(token, userActivation.activation_code);
+    const matched = uEmail === email;
     if (!matched) {
       await userRepo.updateUserActivation(userActivation.pk, { retry_count: userActivation.retry_count + 1 });
       resp = new Response();

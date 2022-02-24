@@ -53,10 +53,10 @@ repo.updateUser = async (userPk, updateInfo) => {
   }
 };
 
-repo.createUserActivation = async (email, encryptedActivationCode) => {
+repo.createUserActivation = async (email, activationCode) => {
   const query = 'insert into user_activations(email, activation_code) values(?,?)';
   try {
-    const result = await db.query(query, [email, encryptedActivationCode]);
+    const result = await db.query(query, [email, activationCode]);
     if (result.insertId > 0) {
       return true;
     } else {

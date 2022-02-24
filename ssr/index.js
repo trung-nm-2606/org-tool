@@ -53,9 +53,9 @@ const signupValidator = async (req, res, next) => {
 const createUserActivation = async (email) => {
   try {
     const activationCode = `${Math.round(Math.random() * 1E9)}`;
-    const encryptedActivationCode = await encryption.encrypt(activationCode);
-    await userRepo.createUserActivation(email, encryptedActivationCode);
-    const content = `<p>Click <a href="http://localhost:8080/users/activation?c=${activationCode}&email=${email}">this link</a> to activate your account</p>`;
+    const activationToken = encryption.createActivationToken({ email }, activationCode);
+    await userRepo.createUserActivation(email, activationCode);
+    const content = `<p>Click <a href="http://localhost:8080/users/activation?token=${activationToken}&email=${email}">this link</a> to activate your account</p>`;
     await mailer.sendMail(email, 'User Activation', content);
   } catch (e) {
     console.log(`[Signup]: Cannot create user activation(email=${email}). ${e.message}`);

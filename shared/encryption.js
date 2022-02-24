@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 
 const encryption = {};
 
@@ -11,6 +12,24 @@ encryption.encrypt = async (value) => {
 encryption.compare = async (value, encryptedValue) => {
   const matched = await bcrypt.compare(value, encryptedValue);
   return matched;
+};
+
+encryption.createActivationToken = (data, privateKey) => {
+  try {
+    return jwt.sign(data, privateKey);
+  } catch (e) {
+    console.log(`[Encryption.JWT]: Cannot create JWT token for data(${data}) with key(${privateKey})`);
+    return '';
+  }
+};
+
+encryption.verifyActivationToken = (token, privateKey) => {
+  try {
+    return jwt.verify(token, privateKey)
+  } catch (e) {
+    console.log(`[Encryption.JWT]: Cannot verify JWT token(${token}) with key(${privateKey})`);
+    return {};
+  }
 };
 
 module.exports = encryption;
