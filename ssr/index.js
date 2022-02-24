@@ -1,5 +1,4 @@
 const express = require('express');
-const path = require('path');
 const userSsr = require('./users');
 const userRepo = require('../repo/users');
 const Response = require('../shared/Response');
@@ -147,13 +146,5 @@ ssr.post('/login', emailPasswordValidator, postLogin);
 ssr.get('/logout', logout);
 
 ssr.use('/users', userSsr);
-
-ssr.get('/', (req, res) => {
-  if (!session.getAuthenticatedUser(req)) {
-    res.redirect('/login');
-    return;
-  }
-  res.sendFile(path.join(__dirname, '../react-app/build/index.html'));
-});
 
 module.exports = ssr;

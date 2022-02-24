@@ -21,6 +21,15 @@ app.use(session({secret: `s3cr3t`}));
 
 app.use('/uploads', express.static('uploads'));
 app.use('/public', express.static('public'));
+
+app.get('/', (req, res) => {
+  if (!req.session.authenticatedUser) {
+    res.redirect('/login');
+    return;
+  }
+  res.sendFile(path.join(__dirname, '/react-app/build/index.html'));
+});
+
 app.use(express.static('react-app/build'));
 
 app.use('/api', api);
@@ -28,6 +37,10 @@ app.use(ssr);
 
 // All not-found routes served by ExpressJs will be directed to ReactJS
 app.use((req, res, next) => {
+  if (!req.session.authenticatedUser) {
+    res.redirect('/login');
+    return;
+  }
   res.sendFile(path.join(__dirname, 'react-app/build/index.html'));
 });
 
