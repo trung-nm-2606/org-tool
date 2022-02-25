@@ -8,18 +8,20 @@ const GroupForm = ({ group }) => {
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState('');
   const [name, setName] = useState(group?.name || '');
-  const [desc, setDesc] = useState(group?.desc || '');
+  const [description, setDescription] = useState(group?.description || '');
 
   const label = !group?.pk ? 'New Group Form' : 'Edit Group Form';
   const submitLabel = !group?.pk ? 'Create' : 'Save';
-  const api = !group?.pk ? '/api/groups/new' : '/api/groups/update';
   const apiErrorMessage = !group?.pk ? 'Cannot create a new group' : 'Cannot update this group';
 
   const createNewGroup = (e) => {
     e.preventDefault();
     setSubmitting(true);
-    axios
-      .post(api, { name, desc })
+
+    const api = !group?.pk ? '/api/groups/new' : `/api/groups/${group?.pk}/update`;
+    const payload = { name, description };
+    const req = !group?.pk ? axios.post(api, payload) : axios.put(api, payload);
+    req
       .then(({ data }) => {
         const { oper } = data;
         if (oper?.status === 'failed') {
@@ -66,8 +68,8 @@ const GroupForm = ({ group }) => {
             id="group-desc"
             placeholder="Describe your group"
             disabled={submitting}
-            value={desc}
-            onChange={e => setDesc(e.target.value)}
+            value={description}
+            onChange={e => setDescription(e.target.value)}
           />
         </div>
         <div>

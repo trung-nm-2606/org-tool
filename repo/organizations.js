@@ -22,7 +22,7 @@ repo.createOrganization = (name, desc, authenticatedUser) => {
           return;
         }
 
-        const query = 'insert into organizations(name, `desc`, created_by, updated_by, status) values(?,?,?,?,?)';
+        const query = 'insert into organizations(name, description, created_by, updated_by, status) values(?,?,?,?,?)';
         const { pk: userPk } = authenticatedUser;
         conn.query(query, [name, desc, userPk, userPk, 'active'], (e, result) => {
           if (e) {
@@ -82,6 +82,29 @@ repo.findOrganizationsByUserPk = async (userPk) => {
   } catch (e) {
     console.log(`[OrganizationRepo]: Cannot get organizations by userPk(${userPk}). ${e.message}`);
     return [];
+  }
+};
+
+repo.updateOrganization = async (organizationPk, userPk, updateInfo) => {
+  const fields = [];
+  const args = [];
+  for (let key in updateInfo) {
+    const field = key;
+    fields.push(`${field}=COALESCE(?, ${field})`);
+    args.push(updateInfo[key]);
+  }
+  const updateFields = fields.join(',')
+  const query = `update organizations set ${updateFields}, updated_at = ?, updated_by = ? where pk = ?`;
+  args.push(dateUtils.getMariaDbCurrentTimestamp());
+  args.push(userPk);
+  args.push(organizationPk);
+
+  try {
+    await db.query(query, args);
+    return true;
+  } catch (e) {
+    console.log(`[OrganizationRepo]: Cannot update organization(pk=${organizationPk}). ${e.message}`);
+    return false;
   }
 };
 

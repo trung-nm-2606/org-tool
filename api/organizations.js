@@ -8,8 +8,16 @@ const organizationValidator = (req, res, next) => {
   if (!name) {
     const resp = new Response();
     resp.setOperStatus(Response.OperStatus.FAILED);
-    resp.setOperMessage('[NewGroup.Validation]: Group name is missing');
+    resp.setOperMessage(`[${req.method === 'PUT' ? 'UpdateGroup' : 'NewGroup'}.Validation]: Group name is missing`);
     res.status(400).json(resp);
+    return;
+  }
+  const { organizationPk } = req.params;
+  if (req.method === 'PUT' && (!organizationPk || +organizationPk <= 0)) {
+    const resp = new Response();
+    resp.setOperStatus(Response.OperStatus.FAILED);
+    resp.setOperMessage('[UpdateGroup.Validation]: Group Not found');
+    res.status(422).json(resp);
     return;
   }
   next();
@@ -17,12 +25,12 @@ const organizationValidator = (req, res, next) => {
 
 const postNew = async (req, res) => {
   try {
-    const { name, desc } = req.body;
-    const authenticateUser = session.getAuthenticatedUser(req);
-    const success = await organizationRepo.createOrganization(name, desc, authenticateUser);
+    const { name, description } = req.body;
+    const authenticatedUser = session.getAuthenticatedUser(req);
+    const success = await organizationRepo.createOrganization(name, description, authenticatedUser);
     if (success) {
       const resp = new Response();
-      resp.setPayload({ name, desc });
+      resp.setPayload({ name, description });
       res.json(resp);
     } else {
       const resp = new Response();
@@ -40,8 +48,8 @@ const postNew = async (req, res) => {
 
 const getOrganizations = async (req, res) => {
   try {
-    const authenticateUser = session.getAuthenticatedUser(req);
-    const organizations = await organizationRepo.findOrganizationsByUserPk(authenticateUser.pk);
+    const authenticatedUser = session.getAuthenticatedUser(req);
+    const organizations = await organizationRepo.findOrganizationsByUserPk(authenticatedUser.pk);
     const resp = new Response();
     resp.setPayload(organizations);
     res.json(resp);
@@ -53,8 +61,33 @@ const getOrganizations = async (req, res) => {
   }
 };
 
+const putUpdate = async (req, res) => {
+  try {
+    const { organizationPk } = req.params;
+    const { name, description } = req.body;
+    const authenticatedUser = session.getAuthenticatedUser(req);
+    const success = await organizationRepo.updateOrganization(organizationPk, authenticatedUser.pk, { name, description });
+    if (success) {
+      const resp = new Response();
+      resp.setPayload({ pk: organizationPk, name, description });
+      res.json(resp);
+    } else {
+      const resp = new Response();
+      resp.setOperStatus(Response.OperStatus.FAILED);
+      resp.setOperMessage(`[UpdateGroup]: Cannot update group`);
+      res.json(resp);
+    }
+  } catch (e) {
+    const resp = new Response();
+    resp.setOperStatus(Response.OperStatus.FAILED);
+    resp.setOperMessage('[UpdateGroup]: Internal Server Error');
+    res.status(500).json(resp);
+  }
+};
+
 const api = express.Router();
 api.post('/new', session.authenticateUser, organizationValidator, postNew);
+api.put('/:organizationPk/update', session.authenticateUser, organizationValidator, putUpdate);
 api.get('/all', session.authenticateUser, getOrganizations);
 
 module.exports = api;

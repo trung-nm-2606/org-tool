@@ -4,7 +4,6 @@ import GroupForm from './GroupForm';
 
 const UpdateGroupForm = () => {
   const { state } = useLocation();
-  console.log(JSON.stringify(state));
   return (
     <GroupForm group={state} />
   );

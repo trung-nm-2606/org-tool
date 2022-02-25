@@ -20,11 +20,11 @@ const GroupsTable = ({ data = [] }) => {
         </tr>
       </thead>
       <tbody>
-        {data.map(({ pk, name, desc, status, role, members_count }, index) => (
+        {data.map(({ pk, name, description, status, role, members_count }, index) => (
           <tr>
             <th scope="row">{index}</th>
             <td>{name}</td>
-            <td>{desc}</td>
+            <td>{description}</td>
             <td>{status}</td>
             <td>{role}</td>
             <td>
@@ -33,7 +33,7 @@ const GroupsTable = ({ data = [] }) => {
               </Link>
             </td>
             <td>
-              <PencilSquare className="me-2 text-primary" onClick={() => updateGroup({ pk, name, desc })} />
+              <PencilSquare className="me-2 text-primary" onClick={() => updateGroup({ pk, name, description })} />
               <TrashFill className="text-danger" />
             </td>
           </tr>
