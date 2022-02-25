@@ -50,6 +50,7 @@ const NewGroupForm = () => {
             disabled={submitting}
             value={name}
             onChange={e => setName(e.target.value)}
+            required
           />
         </div>
         <div className="mb-3">
@@ -69,7 +70,7 @@ const NewGroupForm = () => {
             label="Create"
             loadingLabel="Submitting..."
             loading={submitting}
-            disabled={submitting || !name || !desc}
+            disabled={submitting || !name}
             className="btn btn-outline-primary me-2"
           />
           <Link className="btn" to="/groups">Cancel</Link>
