@@ -5,18 +5,18 @@
   </head>
   <body>
     <h1>Sign up</h1>
-    <form action="/signup" method="post">
+    <form action="/signup" method="post" style="width: 320px;" >
       <%- include('./partials/alert_error'); %>
       <%- include('./partials/alert_success'); %>
-      <div style="margin-bottom: 8px;">
-        <label for="email" style="display: block;">Email:</label>
-        <input id="email" type="email" name="email" style="width: 240px;">
+      <div class="mb-3">
+        <label for="email" class="form-label">Email:</label>
+        <input id="email" type="email" name="email" class="form-control">
       </div>
-      <div style="margin-bottom: 8px;">
-        <label for="password" style="display: block;">Password:</label>
-        <input id="password" type="password" name="password" style="width: 240px;">
+      <div class="mb-3">
+        <label for="password" class="form-label">Password:</label>
+        <input id="password" type="password" name="password" class="form-control">
       </div>
-      <button type="submit">Sign up</button>
+      <button class="btn btn-outline-primary" type="submit">Sign up</button>
     </form>
 	  <%- include('./partials/footer'); %>
   </body>
