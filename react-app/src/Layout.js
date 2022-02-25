@@ -6,7 +6,7 @@ const Layout = ({ children }) => {
   return (
     <BrowserRouter>
       <AppNav />
-      <div className="container">
+      <div className="container-fluid pt-3">
         {children}
       </div>
     </BrowserRouter>

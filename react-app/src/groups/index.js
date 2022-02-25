@@ -6,11 +6,13 @@ const NewGroupForm = React.lazy(() => import('./NewGroupForm'));
 const EditGroupForm = React.lazy(() => import('./EditGroupForm'));
 
 const Groups = () => (
-  <Routes>
-    <Route exact path="new" element={<NewGroupForm />}/>
-    <Route exact path="edit" element={<EditGroupForm />}/>
-    <Route exact path="/" element={<ViewGroups />}/>
-  </Routes>
+  <div className="container">
+    <Routes>
+      <Route exact path="new" element={<NewGroupForm />}/>
+      <Route exact path="edit" element={<EditGroupForm />}/>
+      <Route exact path="/" element={<ViewGroups />}/>
+    </Routes>
+  </div>
 );
 
 export default Groups;
