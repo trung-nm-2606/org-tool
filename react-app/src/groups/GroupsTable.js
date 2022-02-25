@@ -1,8 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { PencilSquare, TrashFill } from 'react-bootstrap-icons'
 
 const GroupsTable = ({ data = [] }) => {
+  const navigate = useNavigate();
+
+  const updateGroup = (group) => navigate('/groups/update', { state: group });
+
   return (
     <table class="table table-striped table-hover">
       <thead>
@@ -29,7 +33,7 @@ const GroupsTable = ({ data = [] }) => {
               </Link>
             </td>
             <td>
-              <PencilSquare className="me-2 text-primary" />
+              <PencilSquare className="me-2 text-primary" onClick={() => updateGroup({ pk, name, desc })} />
               <TrashFill className="text-danger" />
             </td>
           </tr>
