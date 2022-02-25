@@ -19,6 +19,8 @@ const App = () => {
         window.location.reload();
       }
     });
+    const id = setInterval(() => axios.get('/api/app/ping-auth'), 5 * 1000);
+    return () => clearInterval(id);
   }, [/* componentDidMount */]);
 
   return (
