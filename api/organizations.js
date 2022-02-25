@@ -38,7 +38,23 @@ const postNew = async (req, res) => {
   }
 };
 
+const getOrganizations = async (req, res) => {
+  try {
+    const authenticateUser = session.getAuthenticatedUser(req);
+    const organizations = await organizationRepo.findOrganizationsByUserPk(authenticateUser.pk);
+    const resp = new Response();
+    resp.setPayload(organizations);
+    res.json(resp);
+  } catch (e) {
+    const resp = new Response();
+    resp.setOperStatus(Response.OperStatus.FAILED);
+    resp.setOperMessage('[GetGroups]: Internal Server Error');
+    res.status(500).json(resp);
+  }
+};
+
 const api = express.Router();
 api.post('/new', session.authenticateUser, organizationValidator, postNew);
+api.get('/all', session.authenticateUser, getOrganizations);
 
 module.exports = api;
