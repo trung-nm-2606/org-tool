@@ -66,6 +66,17 @@ repo.createOrganization = (name, desc, authenticatedUser) => {
   });
 };
 
+repo.findOrganizationByPk = async (pk) => {
+  const query = `select * from organizations where pk = ?`;
+  try {
+    const organizations = await db.query(query, [pk]);
+    return organizations[0];
+  } catch (e) {
+    console.log(`[OrganizationRepo]: Cannot get organization by pk(${pk}). ${e.message}`);
+    return null;
+  }
+};
+
 repo.findOrganizationsByUserPk = async (userPk) => {
   const query = `select o.*, ou.role, tmp.members_count
   from organizations_users as ou
@@ -104,6 +115,17 @@ repo.updateOrganization = async (organizationPk, userPk, updateInfo) => {
     return true;
   } catch (e) {
     console.log(`[OrganizationRepo]: Cannot update organization(pk=${organizationPk}). ${e.message}`);
+    return false;
+  }
+};
+
+repo.deleteOrganization = async (organizationPk) => {
+  const query = 'delete from organizations where pk = ?';
+  try {
+    await db.query(query, [organizationPk]);
+    return true;
+  } catch (e) {
+    console.log(`[OrganizationRepo]: Cannot delete organization(pk=${organizationPk}). ${e.message}`);
     return false;
   }
 };

@@ -17,13 +17,36 @@ const organizationValidator = (req, res, next) => {
     const resp = new Response();
     resp.setOperStatus(Response.OperStatus.FAILED);
     resp.setOperMessage('[UpdateGroup.Validation]: Group Not found');
-    res.status(422).json(resp);
+    res.status(404).json(resp);
     return;
   }
   next();
 };
 
-const postNew = async (req, res) => {
+const organizationOwnerValidator = async (req, res, next) => {
+  const { organizationPk } = req.params;
+  const organization = await organizationRepo.findOrganizationByPk(organizationPk);
+  if (!organization) {
+    const resp = new Response();
+    resp.setOperStatus(Response.OperStatus.FAILED);
+    resp.setOperMessage('[DeleteGroup.Validation]: Group Not found');
+    res.status(404).json(resp);
+    return;
+  }
+
+  const authenticatedUser = session.getAuthenticatedUser(req);
+  if (organization.created_by !== authenticatedUser.pk) {
+    const resp = new Response();
+    resp.setOperStatus(Response.OperStatus.FAILED);
+    resp.setOperMessage('[DeleteGroup.Validation]: Cannot delete group you did not create');
+    res.status(403).json(resp);
+    return;
+  }
+
+  next();
+};
+
+const postNewGroup = async (req, res) => {
   try {
     const { name, description } = req.body;
     const authenticatedUser = session.getAuthenticatedUser(req);
@@ -61,7 +84,7 @@ const getOrganizations = async (req, res) => {
   }
 };
 
-const putUpdate = async (req, res) => {
+const putUpdateGroup = async (req, res) => {
   try {
     const { organizationPk } = req.params;
     const { name, description } = req.body;
@@ -85,9 +108,32 @@ const putUpdate = async (req, res) => {
   }
 };
 
+const deleteGroup = async (req, res) => {
+  try {
+    const { organizationPk } = req.params;
+    const success = await organizationRepo.deleteOrganization(organizationPk);
+    if (success) {
+      const resp = new Response();
+      resp.setPayload({ pk: organizationPk });
+      res.json(resp);
+    } else {
+      const resp = new Response();
+      resp.setOperStatus(Response.OperStatus.FAILED);
+      resp.setOperMessage(`[DeleteGroup]: Cannot delete group`);
+      res.json(resp);
+    }
+  } catch (e) {
+    const resp = new Response();
+    resp.setOperStatus(Response.OperStatus.FAILED);
+    resp.setOperMessage('[DeleteGroup]: Internal Server Error');
+    res.status(500).json(resp);
+  }
+};
+
 const api = express.Router();
-api.post('/new', session.authenticateUser, organizationValidator, postNew);
-api.put('/:organizationPk/update', session.authenticateUser, organizationValidator, putUpdate);
+api.post('/new', session.authenticateUser, organizationValidator, postNewGroup);
+api.put('/:organizationPk/update', session.authenticateUser, organizationValidator, putUpdateGroup);
+api.delete('/:organizationPk/delete', session.authenticateUser, organizationOwnerValidator, deleteGroup);
 api.get('/all', session.authenticateUser, getOrganizations);
 
 module.exports = api;

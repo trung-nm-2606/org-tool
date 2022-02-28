@@ -14,7 +14,7 @@ const GroupForm = ({ group }) => {
   const submitLabel = !group?.pk ? 'Create' : 'Save';
   const apiErrorMessage = !group?.pk ? 'Cannot create a new group' : 'Cannot update this group';
 
-  const createNewGroup = (e) => {
+  const createUpdateGroup = (e) => {
     e.preventDefault();
     setSubmitting(true);
 
@@ -40,7 +40,7 @@ const GroupForm = ({ group }) => {
       <div className="d-flex align-items-center justify-content-between">
         <h1>{label}</h1>
       </div>
-      <form onSubmit={createNewGroup}>
+      <form onSubmit={createUpdateGroup}>
         {message && (
           <div className="alert alert-danger alert-dismissible fade show mb-3" role="alert">
             {message}

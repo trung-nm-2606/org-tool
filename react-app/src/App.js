@@ -13,11 +13,11 @@ const App = () => {
     axios.interceptors.response.use((response) => {
       return response;
     }, (error) => {
-      Promise.reject(error);
       if (error.response.status === 401) {
         console.log('Unauthenticated User')
         window.location.reload();
       }
+      return Promise.reject(error);
     });
     const id = setInterval(() => axios.get('/api/app/ping-auth'), 5 * 1000);
     return () => clearInterval(id);
