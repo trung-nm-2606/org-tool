@@ -35,6 +35,8 @@ const GroupsTable = ({ data = [] }) => {
 
   const updateGroup = (group) => navigate('/groups/update', { state: group });
 
+  const viewMembers = (groupPk) => navigate('/members', { state: groupPk });
+
   if (gettingGroups) {
     return (<div>Getting groups...</div>);
   }
@@ -67,9 +69,9 @@ const GroupsTable = ({ data = [] }) => {
               <td>{status}</td>
               <td>{role}</td>
               <td>
-                <Link to={`/members/${pk}`}>
+                <button type="button" class="btn btn-link" onClick={() => viewMembers(pk)}>
                   {`${members_count} members`}
-                </Link>
+                </button>
               </td>
               <td>
                 <PencilSquare className="me-2 text-primary" onClick={() => updateGroup({ pk, name, description })} />

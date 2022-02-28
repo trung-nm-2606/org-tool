@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 
-const GroupsSelect = ({ onChange }) => {
+const GroupsSelect = ({ initGroupPk, onChange }) => {
   const [hasError, setHasError] = useState(false);
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
@@ -30,7 +30,7 @@ const GroupsSelect = ({ onChange }) => {
   return (
     <div class="dropdown">
       <button class="btn btn-outline-primary dropdown-toggle" type="button" id="groups-selector" data-bs-toggle="dropdown" aria-expanded="false">
-        {selectedGroup || 'Select a group'}
+        {selectedGroup || groups?.find(({ pk }) => initGroupPk === pk)?.name || 'Select a group'}
       </button>
       <ul class="dropdown-menu" aria-labelledby="groups-selector">
         {groups.map(({ pk, name }, index) => (
