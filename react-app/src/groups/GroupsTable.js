@@ -11,6 +11,8 @@ const GroupsTable = ({ data = [] }) => {
   const [gettingGroups, setGettingGroups] = useState(true);
 
   const loadGroups = useCallback(() => {
+    setMessage('');
+    setGettingGroups(true);
     axios
       .get('/api/groups/all')
       .then(({ data }) => {

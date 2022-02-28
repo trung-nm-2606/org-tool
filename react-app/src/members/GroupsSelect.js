@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 
 const GroupsSelect = ({ onChange }) => {
+  const [hasError, setHasError] = useState(false);
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [gettingGroups, setGettingGroups] = useState(true);
@@ -13,10 +14,7 @@ const GroupsSelect = ({ onChange }) => {
         const { payload } = data;
         setGroups(payload);
       })
-      .catch(({ data }) => {
-        // const { oper } = data;
-        // setMessage(oper?.message);
-      })
+      .catch(() => setHasError(true))
       .finally(() => setGettingGroups(false))
     ;
   }, []);
@@ -46,6 +44,11 @@ const GroupsSelect = ({ onChange }) => {
             <span className="dropdown-item">{name}</span>
           </li>
         ))}
+        {hasError && (
+          <li onClick={loadGroups}>
+            <span className="dropdown-item">Retry loading groups</span>
+          </li>
+        )}
       </ul>
     </div>
   );

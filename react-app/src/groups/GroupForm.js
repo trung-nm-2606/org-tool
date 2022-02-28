@@ -16,6 +16,7 @@ const GroupForm = ({ group }) => {
 
   const createUpdateGroup = (e) => {
     e.preventDefault();
+    setMessage('');
     setSubmitting(true);
 
     const api = !group?.pk ? '/api/groups/new' : `/api/groups/${group?.pk}/update`;
