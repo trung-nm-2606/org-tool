@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { PencilSquare } from 'react-bootstrap-icons';
 import DeleteGroupBtn from './DeleteGroupBtn';
@@ -6,12 +7,35 @@ import DeleteGroupBtn from './DeleteGroupBtn';
 const GroupsTable = ({ data = [] }) => {
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
+  const [groups, setGroups] = useState([]);
+  const [gettingGroups, setGettingGroups] = useState(true);
 
-  const onSuccessDeleting = useCallback(() => {/* Empty */}, []);
+  const loadGroups = useCallback(() => {
+    axios
+      .get('/api/groups/all')
+      .then(({ data }) => {
+        const { payload } = data;
+        setGroups(payload);
+      })
+      .catch(({ data }) => {
+        const { oper } = data;
+        setMessage(oper?.message);
+      })
+      .finally(() => setGettingGroups(false))
+    ;
+  }, []);
+
+  useEffect(() => {
+    loadGroups();
+  }, [/* componentDidMount */]);
 
   const onErrorDeleting = useCallback((groupName) => setMessage(`Cannot delete the group ${groupName}`), []);
 
   const updateGroup = (group) => navigate('/groups/update', { state: group });
+
+  if (gettingGroups) {
+    return (<div>Getting groups...</div>);
+  }
 
   return (
     <>
@@ -33,7 +57,7 @@ const GroupsTable = ({ data = [] }) => {
           </tr>
         </thead>
         <tbody>
-          {data.map(({ pk, name, description, status, role, members_count }, index) => (
+          {groups.map(({ pk, name, description, status, role, members_count }, index) => (
             <tr key={`${pk}-${name}-${index}`}>
               <th scope="row">{index}</th>
               <td>{name}</td>
@@ -50,7 +74,7 @@ const GroupsTable = ({ data = [] }) => {
                 <DeleteGroupBtn
                   groupPk={pk}
                   groupName={name}
-                  onSuccess={onSuccessDeleting}
+                  onSuccess={loadGroups}
                   onError={onErrorDeleting}
                 />
               </td>
