@@ -46,7 +46,7 @@ const MemberList = ({ groupPk }) => {
       )}
       {`Number of members: ${members?.length} members`}
       <div className="table-responsive">
-        <table class="table table-striped table-hover">
+        <table class="table table-striped table-hover fw-light">
           <thead>
             <tr>
               <th scope="col">#</th>

@@ -50,7 +50,7 @@ const GroupsTable = ({ data = [] }) => {
         </div>
       )}
       <div className="table-responsive">
-        <table class="table table-striped table-hover">
+        <table class="table table-striped table-hover fw-light">
           <thead>
             <tr>
               <th scope="col">#</th>

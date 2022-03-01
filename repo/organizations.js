@@ -143,4 +143,15 @@ repo.findMembersByOrganizationPk = async (organizationPk) => {
   }
 }
 
+repo.addUserToOrganization = async (organizationPk, userPk) => {
+  const query = 'insert into organizations_users(organization_pk, user_pk, role) values(?,?,?)';
+  try {
+    await db.query(query, [organizationPk, userPk, 'member']);
+    return true;
+  } catch (e) {
+    console.log(`[OrganizationRepo]: Cannot add member(pk=${userPk}) to organization(pk=${organizationPk}). ${e.message}`);
+    return false;
+  }
+};
+
 module.exports = repo;

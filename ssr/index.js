@@ -21,6 +21,7 @@ const emailPasswordValidator = (req, res, next) => {
     } else {
       res.status(400).json(resp);
     }
+    return;
   }
 
   next();
