@@ -70,11 +70,7 @@ const invitationValidator = async (req, res, next) => {
       // User with given email already existed
       // Check user status and add member
 
-      if (user.status === 'demo') {
-        await remindUserActivation(email);
-      }
-
-      if (user.status !== 'demo' && user.status !== 'active') {
+      if (['banned', 'archived'].includes(user.status)) {
         resp = new Response();
         resp.setOperStatus(Response.OperStatus.FAILED);
         resp.setOperMessage('[InviteMember]: Inviting member is invalid to add');
@@ -82,15 +78,17 @@ const invitationValidator = async (req, res, next) => {
         return
       }
 
-      if (user.status === 'active') {
-        const success = organizationRepo.addUserToOrganization(organizationPk, user.pk);
-        if (!success) {
-          resp = new Response();
-          resp.setOperStatus(Response.OperStatus.FAILED);
-          resp.setOperMessage('[InviteMember]: Cannot add member to the group');
-          res.json(resp);
-          return;
-        }
+      if (user.status === 'demo') {
+        await remindUserActivation(email);
+      }
+
+      const success = organizationRepo.addUserToOrganization(organizationPk, user.pk);
+      if (!success) {
+        resp = new Response();
+        resp.setOperStatus(Response.OperStatus.FAILED);
+        resp.setOperMessage('[InviteMember]: Cannot add member to the group');
+        res.json(resp);
+        return;
       }
 
       resp = new Response();
@@ -118,12 +116,24 @@ const postInviteMember = async (req, res) => {
   const password = '12345678';
   const body = req.body;
   const { email } = body;
+  const { organizationPk } = req.params;
 
   try {
     const encryptedPassword = await encryption.encrypt(password);
     const success = await userRepo.createUser(email, encryptedPassword);
     if (success) {
       createUserActivation(email);
+
+      const user = await userRepo.findUserByEmail(email);
+      const success = organizationRepo.addUserToOrganization(organizationPk, user.pk);
+      if (!success) {
+        resp = new Response();
+        resp.setOperStatus(Response.OperStatus.FAILED);
+        resp.setOperMessage('[InviteMember]: Cannot add member to the group');
+        res.json(resp);
+        return;
+      }
+
       const resp = new Response();
       resp.setOperMessage(`[InviteMember]: An email has been sent to the email(${email}) to verify and activate the account`);
       res.json(resp);
