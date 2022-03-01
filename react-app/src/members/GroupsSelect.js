@@ -11,13 +11,17 @@ const GroupsSelect = ({ initGroupPk, onChange }) => {
     axios
       .get('/api/groups/all')
       .then(({ data }) => {
-        const { payload } = data;
-        setGroups(payload);
+        const { payload: groups } = data;
+        setGroups(groups);
+        const initGroup = groups.find(({ pk }) => initGroupPk === pk);
+        const group = initGroup || groups[0];
+        onChange(group?.pk);
+        setSelectedGroup(group);
       })
       .catch(() => setHasError(true))
       .finally(() => setGettingGroups(false))
     ;
-  }, []);
+  }, [initGroupPk, onChange]);
 
   useEffect(() => {
     loadGroups();
@@ -30,7 +34,7 @@ const GroupsSelect = ({ initGroupPk, onChange }) => {
   return (
     <div class="dropdown">
       <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="groups-selector" data-bs-toggle="dropdown" aria-expanded="false">
-        {selectedGroup || groups?.find(({ pk }) => initGroupPk === pk)?.name || 'Select a group'}
+        {selectedGroup?.name || 'Select a group'}
       </button>
       <ul class="dropdown-menu" aria-labelledby="groups-selector">
         {groups.map(({ pk, name }, index) => (

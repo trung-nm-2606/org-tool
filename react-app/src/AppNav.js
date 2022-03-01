@@ -5,7 +5,7 @@ import { List } from 'react-bootstrap-icons';
 const AppNav = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <div className="container-fluid">
+      <div className="container">
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#app-nav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <List />
         </button>
