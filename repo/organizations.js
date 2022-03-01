@@ -130,4 +130,17 @@ repo.deleteOrganization = async (organizationPk) => {
   }
 };
 
+repo.findMembersByOrganizationPk = async (organizationPk) => {
+  const query = `select ou.*, u.* from organizations_users as ou
+  left join users u on ou.user_pk = u.pk
+  where ou.organization_pk = ?`;
+  try {
+    const members = await db.query(query, [organizationPk]);
+    return members;
+  } catch (e) {
+    console.log(`[OrganizationRepo]: Cannot get members of organization(pk=${organizationPk}). ${e.message}`);
+    return [];
+  }
+}
+
 module.exports = repo;
