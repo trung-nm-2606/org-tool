@@ -45,31 +45,33 @@ const MemberList = ({ groupPk }) => {
         </div>
       )}
       {`Number of members: ${members?.length} members`}
-      <table class="table table-striped table-hover">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Status</th>
-            <th scope="col">Role</th>
-          </tr>
-        </thead>
-        <tbody>
-          {members.map(({ pk, name, full_name, email, status, role }, index) => (
-            <tr key={`${pk}-${name}-${index}`}>
-              <th scope="row">{index}</th>
-              <td>
-                <span className="d-block">{`${name}${role === 'owner' ? ' (you)' : ''}`}</span>
-                <span className="d-block text-muted">{full_name}</span>
-              </td>
-              <td>{email}</td>
-              <td>{status}</td>
-              <td>{role}</td>
+      <div className="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Email</th>
+              <th scope="col">Status</th>
+              <th scope="col">Role</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {members.map(({ pk, name, full_name, email, status, role }, index) => (
+              <tr key={`${pk}-${name}-${index}`}>
+                <th scope="row">{index}</th>
+                <td>
+                  <span className="d-block">{`${name}${role === 'owner' ? ' (you)' : ''}`}</span>
+                  <span className="d-block text-muted">{full_name}</span>
+                </td>
+                <td>{email}</td>
+                <td>{status}</td>
+                <td>{role}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 };

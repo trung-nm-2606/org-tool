@@ -49,43 +49,45 @@ const GroupsTable = ({ data = [] }) => {
           <button type="button" className="btn-sm btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       )}
-      <table class="table table-striped table-hover">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Description</th>
-            <th scope="col">Status</th>
-            <th scope="col">Role</th>
-            <th scope="col" colSpan={2}>N0 of Members</th>
-          </tr>
-        </thead>
-        <tbody>
-          {groups.map(({ pk, name, description, status, role, members_count }, index) => (
-            <tr key={`${pk}-${name}-${index}`}>
-              <th scope="row">{index}</th>
-              <td>{name}</td>
-              <td>{description}</td>
-              <td>{status}</td>
-              <td>{role}</td>
-              <td>
-                <button type="button" class="btn btn-link" onClick={() => viewMembers(pk)}>
-                  {`${members_count} members`}
-                </button>
-              </td>
-              <td>
-                <PencilSquare className="me-2 text-primary" onClick={() => updateGroup({ pk, name, description })} />
-                <DeleteGroupBtn
-                  groupPk={pk}
-                  groupName={name}
-                  onSuccess={loadGroups}
-                  onError={onErrorDeleting}
-                />
-              </td>
+      <div className="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Description</th>
+              <th scope="col">Status</th>
+              <th scope="col">Role</th>
+              <th scope="col" colSpan={2}>N0 of Members</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {groups.map(({ pk, name, description, status, role, members_count }, index) => (
+              <tr key={`${pk}-${name}-${index}`}>
+                <th scope="row">{index}</th>
+                <td>{name}</td>
+                <td>{description}</td>
+                <td>{status}</td>
+                <td>{role}</td>
+                <td>
+                  <button type="button" class="btn btn-link" onClick={() => viewMembers(pk)}>
+                    {`${members_count} members`}
+                  </button>
+                </td>
+                <td>
+                  <PencilSquare className="me-2 text-primary" onClick={() => updateGroup({ pk, name, description })} />
+                  <DeleteGroupBtn
+                    groupPk={pk}
+                    groupName={name}
+                    onSuccess={loadGroups}
+                    onError={onErrorDeleting}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 };
