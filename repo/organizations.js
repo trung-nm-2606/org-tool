@@ -133,7 +133,7 @@ repo.deleteOrganization = async (organizationPk) => {
 repo.findMembersByOrganizationPk = async (organizationPk) => {
   const query = `select ou.*, u.* from organizations_users as ou
   left join users u on ou.user_pk = u.pk
-  where ou.organization_pk = ?`;
+  where ou.organization_pk = ? and u.status = 'active'`;
   try {
     const members = await db.query(query, [organizationPk]);
     return members;

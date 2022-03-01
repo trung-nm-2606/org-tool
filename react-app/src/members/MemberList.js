@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
+import InviteMemberBtn from './InviteMemberBtn';
 
 const MemberList = ({ groupPk }) => {
   const [message, setMessage] = useState('');
   const [members, setMembers] = useState([]);
   const [gettingMembers, setGettingMembers] = useState(true);
 
-  useEffect(() => {
+  const reloadMembers = useCallback((groupPk) => {
     if (!groupPk || groupPk <= 0) {
       return;
     }
@@ -26,14 +27,18 @@ const MemberList = ({ groupPk }) => {
       })
       .finally(() => setGettingMembers(false))
     ;
-  }, [groupPk]);
+  }, []);
+
+  useEffect(() => {
+    reloadMembers(groupPk);
+  }, [groupPk, reloadMembers]);
 
   if (!groupPk || groupPk <= 0) {
     return null;
   }
 
   if (gettingMembers) {
-    return (<div>Getting groups...</div>);
+    return (<div>Getting members...</div>);
   }
 
   return (
@@ -44,7 +49,10 @@ const MemberList = ({ groupPk }) => {
           <button type="button" className="btn-sm btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       )}
-      {`Number of members: ${members?.length} members`}
+      <div className="mb-2">{`Number of members: ${members?.length} members`}</div>
+      <div>
+        <InviteMemberBtn groupPk={groupPk} onReLoadMembers={() => reloadMembers(groupPk)} />
+      </div>
       <div className="table-responsive">
         <table class="table table-striped table-hover fw-light">
           <thead>

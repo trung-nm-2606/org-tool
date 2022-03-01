@@ -17,7 +17,7 @@ const App = () => {
         console.log('Unauthenticated User')
         window.location.reload();
       }
-      return Promise.reject(error);
+      return Promise.reject(error.response);
     });
     const id = setInterval(() => axios.get('/api/app/ping-auth'), 5 * 1000);
     return () => clearInterval(id);

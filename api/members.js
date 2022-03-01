@@ -21,6 +21,28 @@ const getMembers = async (req, res) => {
   }
 };
 
+const organizationValidator = async (req, res, next) => {
+  const { organizationPk } = req.params;
+  if (!organizationPk || +organizationPk <= 0) {
+    const resp = new Response();
+    resp.setOperStatus(Response.OperStatus.FAILED);
+    resp.setOperMessage('[InviteMember.Validation]: Group Not found');
+    res.status(404).json(resp);
+    return;
+  }
+
+  const organization = await organizationRepo.findOrganizationByPk(organizationPk);
+  if (!organization) {
+    const resp = new Response();
+    resp.setOperStatus(Response.OperStatus.FAILED);
+    resp.setOperMessage('[InviteMember.Validation]: Group Not found');
+    res.status(404).json(resp);
+    return;
+  }
+
+  next();
+};
+
 const emailValidator = (req, res, next) => {
   const body = req.body;
   const { email } = body;
@@ -28,7 +50,7 @@ const emailValidator = (req, res, next) => {
   if (!email) {
     const resp = new Response();
     resp.setOperStatus(Response.OperStatus.FAILED);
-    resp.setOperMessage('[Validation]: Invalid email');
+    resp.setOperMessage('[InviteMember.Validation]: Invalid email');
     res.status(400).json(resp);
     return;
   }
@@ -153,6 +175,6 @@ const postInviteMember = async (req, res) => {
 
 const api = express.Router();
 api.get('/:organizationPk/all', session.authenticateUser, getMembers);
-api.post('/:organizationPk/invite', session.authenticateUser, emailValidator, invitationValidator, postInviteMember);
+api.post('/:organizationPk/invite', session.authenticateUser, emailValidator, organizationValidator, invitationValidator, postInviteMember);
 
 module.exports = api;
