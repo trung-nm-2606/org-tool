@@ -154,4 +154,15 @@ repo.addUserToOrganization = async (organizationPk, userPk) => {
   }
 };
 
+repo.removeUserFromOrganization = async (organizationPk, userPk) => {
+  const query = 'delete from organizations_users where organization_pk = ? and user_pk = ?';
+  try {
+    await db.query(query, [organizationPk, userPk]);
+    return true;
+  } catch (e) {
+    console.log(`[OrganizationRepo]: Cannot remove member(pk=${userPk}) from organization(pk=${organizationPk}). ${e.message}`);
+    return false;
+  }
+};
+
 module.exports = repo;

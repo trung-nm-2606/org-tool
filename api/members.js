@@ -26,7 +26,7 @@ const organizationValidator = async (req, res, next) => {
   if (!organizationPk || +organizationPk <= 0) {
     const resp = new Response();
     resp.setOperStatus(Response.OperStatus.FAILED);
-    resp.setOperMessage('[InviteMember.Validation]: Group Not found');
+    resp.setOperMessage('[InviteMember.Validation]: Invalid group');
     res.status(404).json(resp);
     return;
   }
@@ -37,6 +37,37 @@ const organizationValidator = async (req, res, next) => {
     resp.setOperStatus(Response.OperStatus.FAILED);
     resp.setOperMessage('[InviteMember.Validation]: Group Not found');
     res.status(404).json(resp);
+    return;
+  }
+
+  next();
+};
+
+const organizationOwnerValidator = async (req, res, next) => {
+  const { organizationPk, memberPk } = req.params;
+  const organization = await organizationRepo.findOrganizationByPk(organizationPk);
+  if (!organization) {
+    const resp = new Response();
+    resp.setOperStatus(Response.OperStatus.FAILED);
+    resp.setOperMessage('[MemberOperation.Validation]: Group Not found');
+    res.status(404).json(resp);
+    return;
+  }
+
+  const authenticatedUser = session.getAuthenticatedUser(req);
+  if (organization.created_by !== authenticatedUser.pk) {
+    const resp = new Response();
+    resp.setOperStatus(Response.OperStatus.FAILED);
+    resp.setOperMessage('[MemberOperation.Validation]: Cannot operate on group you did not create');
+    res.status(403).json(resp);
+    return;
+  }
+
+  if (+memberPk === authenticatedUser.pk) {
+    const resp = new Response();
+    resp.setOperStatus(Response.OperStatus.FAILED);
+    resp.setOperMessage('[RemoveMember]: Cannot remove yourself from group');
+    res.status(422).json(resp);
     return;
   }
 
@@ -91,6 +122,15 @@ const invitationValidator = async (req, res, next) => {
       let resp;
       // User with given email already existed
       // Check user status and add member
+
+      const authenticatedUser = session.getAuthenticatedUser(req);
+      if (user.pk === authenticatedUser.pk) {
+        resp = new Response();
+        resp.setOperStatus(Response.OperStatus.FAILED);
+        resp.setOperMessage('[InviteMember]: Cannot add yourself to group');
+        res.json(resp);
+        return;
+      }
 
       if (['banned', 'archived'].includes(user.status)) {
         resp = new Response();
@@ -173,8 +213,31 @@ const postInviteMember = async (req, res) => {
   }
 };
 
+const removeMember = async (req, res) => {
+  try {
+    const { organizationPk, memberPk } = req.params;
+    const success = await organizationRepo.removeUserFromOrganization(organizationPk, memberPk);
+    if (success) {
+      const resp = new Response();
+      resp.setOperMessage(`[RemoveMember]: Member removed from group successullfy`);
+      res.json(resp);
+    } else {
+      const resp = new Response();
+      resp.setOperStatus(Response.OperStatus.FAILED);
+      resp.setOperMessage('[RemoveMember]: Cannot remove member from group');
+      res.json(resp);
+    }
+  } catch (e) {
+    const resp = new Response();
+    resp.setOperStatus(Response.OperStatus.FAILED);
+    resp.setOperMessage('[RemoveMember]: Internal Server Error');
+    res.render(resp);
+  }
+};
+
 const api = express.Router();
 api.get('/:organizationPk/all', session.authenticateUser, getMembers);
-api.post('/:organizationPk/invite', session.authenticateUser, emailValidator, organizationValidator, invitationValidator, postInviteMember);
+api.post('/:organizationPk/invite', session.authenticateUser, emailValidator, organizationValidator, organizationOwnerValidator, invitationValidator, postInviteMember);
+api.delete('/:organizationPk/:memberPk/remove', session.authenticateUser, organizationOwnerValidator, removeMember);
 
 module.exports = api;

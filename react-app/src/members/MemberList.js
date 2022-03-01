@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import InviteMemberBtn from './InviteMemberBtn';
+import RemoveMemberBtn from './RemoveMemberBtn';
 
 const MemberList = ({ groupPk }) => {
   const [message, setMessage] = useState('');
@@ -51,7 +52,7 @@ const MemberList = ({ groupPk }) => {
       )}
       <div className="mb-2">{`Number of members: ${members?.length} members`}</div>
       <div>
-        <InviteMemberBtn groupPk={groupPk} onReLoadMembers={() => reloadMembers(groupPk)} />
+        <InviteMemberBtn groupPk={groupPk} onSuccess={() => reloadMembers(groupPk)} />
       </div>
       <div className="table-responsive">
         <table class="table table-striped table-hover fw-light">
@@ -61,13 +62,13 @@ const MemberList = ({ groupPk }) => {
               <th scope="col">Name</th>
               <th scope="col">Email</th>
               <th scope="col">Status</th>
-              <th scope="col">Role</th>
+              <th scope="col" colSpan={2}>Role</th>
             </tr>
           </thead>
           <tbody>
             {members.map(({ pk, name, full_name, email, status, role }, index) => (
               <tr key={`${pk}-${name}-${index}`}>
-                <th scope="row">{index}</th>
+                <th scope="row">{index + 1}</th>
                 <td>
                   <span className="d-block">{`${name}${role === 'owner' ? ' (you)' : ''}`}</span>
                   <span className="d-block text-muted">{full_name}</span>
@@ -75,6 +76,17 @@ const MemberList = ({ groupPk }) => {
                 <td>{email}</td>
                 <td>{status}</td>
                 <td>{role}</td>
+                <td>
+                  {role !== 'owner' && (
+                    <RemoveMemberBtn
+                      groupPk={groupPk}
+                      memberPk={pk}
+                      memberName={`${name} (${full_name})`}
+                      onError={message => setMessage(message)}
+                      onSuccess={() => reloadMembers(groupPk)}
+                    />
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

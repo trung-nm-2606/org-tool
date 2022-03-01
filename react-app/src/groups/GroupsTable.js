@@ -64,7 +64,7 @@ const GroupsTable = ({ data = [] }) => {
           <tbody>
             {groups.map(({ pk, name, description, status, role, members_count }, index) => (
               <tr key={`${pk}-${name}-${index}`}>
-                <th scope="row">{index}</th>
+                <th scope="row">{index + 1}</th>
                 <td>{name}</td>
                 <td>{description}</td>
                 <td>{status}</td>

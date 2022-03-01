@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import axios from 'axios';
 
-const InviteMemberBtn = ({ groupPk, onReLoadMembers }) => {
+const InviteMemberBtn = ({ groupPk, onSuccess }) => {
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState('');
   const [email, setEmail] = useState('');
@@ -16,7 +16,7 @@ const InviteMemberBtn = ({ groupPk, onReLoadMembers }) => {
         const { oper } = data;
         if (oper?.status === 'success') {
           ref.current.click();
-          onReLoadMembers();
+          onSuccess();
         } else {
           setMessage(oper?.message || 'Cannot invite member');
         }
