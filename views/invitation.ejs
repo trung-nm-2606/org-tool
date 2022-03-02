@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('./partials/head'); %>
+  </head>
+  <body class="container">
+    <h1>Member Invitation</h1>
+    <form action="/users/invitation" method="post" style="width: 320px;" >
+      <%- include('./partials/alert_error'); %>
+      <%- include('./partials/alert_success'); %>
+      <%if (locals.oper && oper.status === 'success') {%>
+      <div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email:</label>
+          <input id="email" type="email" name="email" class="form-control">
+        </div>
+        <!-- <div class="mb-3">
+          <label for="password" class="form-label">Password:</label>
+          <input id="password" type="password" name="password" class="form-control">
+        </div> -->
+        <div>
+          <input id="invitation-token" type="hidden" name="invitation-token" value="<%=locals.payload%>">
+        </div>
+        <button class="btn btn-outline-primary" type="submit">Accept Invitation</button>
+      </div>
+      <%}%>
+    </form>
+	  <%- include('./partials/footer'); %>
+  </body>
+</html>

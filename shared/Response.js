@@ -3,7 +3,8 @@ class Response {
     this.oper = {
       status: 'success',
       message: null,
-      code: null
+      code: null,
+      stack: null
     };
     this.payload = null;
   }
@@ -18,6 +19,10 @@ class Response {
 
   setOperStatusCode(code = null) {
     this.oper.code = code;
+  }
+
+  setOperStack(stack = null) {
+    this.oper.stack = stack;
   }
 
   setPayload(payload = null) {

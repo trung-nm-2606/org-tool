@@ -165,4 +165,17 @@ repo.removeUserFromOrganization = async (organizationPk, userPk) => {
   }
 };
 
+repo.findOrganizationsOwnedByUserPk = async (userPk) => {
+  const query = `select * from organizations as o
+  left join organizations_users ou on o.pk = ou.organization_pk
+  where ou.role = ? and ou.user_pk = ?`;
+  try {
+    const organizations = await db.query(query, ['owner', userPk]);
+    return organizations;
+  } catch (e) {
+    console.log(`[OrganizationRepo]: Cannot get organizations owned by user(pk=${userPk}). ${e.message}`);
+    return [];
+  }
+};
+
 module.exports = repo;

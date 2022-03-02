@@ -14,7 +14,7 @@ encryption.compare = async (value, encryptedValue) => {
   return matched;
 };
 
-encryption.createActivationToken = (data, privateKey) => {
+encryption.createToken = (data, privateKey) => {
   try {
     return jwt.sign(data, privateKey);
   } catch (e) {
@@ -23,11 +23,12 @@ encryption.createActivationToken = (data, privateKey) => {
   }
 };
 
-encryption.verifyActivationToken = (token, privateKey) => {
+encryption.verifyToken = (token, privateKey) => {
   try {
     return jwt.verify(token, privateKey)
   } catch (e) {
     console.log(`[Encryption.JWT]: Cannot verify JWT token(${token}) with key(${privateKey})`);
+    console.log(e.stack);
     return {};
   }
 };

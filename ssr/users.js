@@ -1,13 +1,14 @@
 const express = require('express');
 const Response = require('../shared/Response');
 const userRepo = require('../repo/users');
+const organizationRepo = require('../repo/organizations');
 const encryption = require('../shared/encryption');
 const mailer = require('../shared/mailer');
 
 const createUserActivation = async (email) => {
   try {
     const activationCode = `${Math.round(Math.random() * 1E9)}`;
-    const activationToken = encryption.createActivationToken({ email }, activationCode);
+    const activationToken = encryption.createToken({ email }, activationCode);
     await userRepo.createUserActivation(email, activationCode);
     const content = `<p>Click <a href="http://localhost:8080/users/activation?token=${activationToken}&email=${email}">this link</a> to activate your account</p>`;
     await mailer.sendMail(email, 'User Activation', content);
@@ -22,7 +23,7 @@ const renewUserActivation = async (userActivation) => {
   let success;
   try {
     const activationCode = `${Math.round(Math.random() * 1E9)}`;
-    const activationToken = encryption.createActivationToken({ email: userActivation.email }, activationCode);
+    const activationToken = encryption.createToken({ email: userActivation.email }, activationCode);
 
     success = await userRepo.updateUserActivation(userActivation.pk, {
       activation_code: activationCode,
@@ -107,7 +108,7 @@ const userActivation = async (req, res) => {
       return;
     }
 
-    const { email: uEmail } = encryption.verifyActivationToken(token, userActivation.activation_code);
+    const { email: uEmail } = encryption.verifyToken(token, userActivation.activation_code);
     const matched = uEmail === email;
     if (!matched) {
       await userRepo.updateUserActivation(userActivation.pk, { retry_count: userActivation.retry_count + 1 });
@@ -244,8 +245,176 @@ const getRenew = async (req, res) => {
   }
 };
 
+const getInvitation = (req, res) => {
+  const { token } = req.query;
+  if (!token) {
+    const resp = new Response();
+    resp.setOperStatus(Response.OperStatus.FAILED);
+    resp.setOperMessage('[MemberInvitation]: Invalid invitation token');
+    res.render('invitation', resp);
+    return;
+  }
+
+  const resp = new Response();
+  resp.setOperStatus(Response.OperStatus.SUCCESS);
+  resp.setPayload(token);
+  res.render('invitation', resp);
+};
+
+const invitationTokenValidator = async (req, res, next) => {
+  try {
+    const { 'invitation-token': token } = req.body;
+    const {
+      organizationOwnerPk,
+      organizationOwnerEmail,
+      organizationPk
+    } = encryption.verifyToken(token, 'ac7iva7i0nC0d3');
+
+    const user = await userRepo.findUserByEmail(organizationOwnerEmail);
+    if (!user) {
+      const resp = new Response();
+      resp.setOperStatus(Response.OperStatus.FAILED);
+      resp.setOperMessage('[MemberInvitation.Validator]: Invalid invitation token');
+      res.render('invitation', resp);
+      return;
+    }
+
+    if (user.pk !== organizationOwnerPk) {
+      const resp = new Response();
+      resp.setOperStatus(Response.OperStatus.FAILED);
+      resp.setOperMessage('[MemberInvitation.Validator]: Invalid invitation token');
+      res.render('invitation', resp);
+      return;
+    }
+
+    const organizations = await organizationRepo.findOrganizationsOwnedByUserPk(user.pk);
+    const organization = organizations.find(({ pk }) => +pk === +organizationPk);
+    if (!organization) {
+      const resp = new Response();
+      resp.setOperStatus(Response.OperStatus.FAILED);
+      resp.setOperMessage('[MemberInvitation.Validator]: Group Not found');
+      res.render('invitation', resp);
+      return;
+    }
+
+    next();
+  } catch (e) {
+    const resp = new Response();
+    resp.setOperStatus(Response.OperStatus.FAILED);
+    resp.setOperMessage('[MemberInvitation.Validator]: Internal Server Error');
+    resp.setOperStack(e.stack);
+    res.render('invitation', resp);
+  }
+};
+
+const signupAndAddMemberToOrganization = async (req, res) => {
+  /**
+   * Base on `postSignup`
+   * with default password as 12345678
+   * TODO: refactor to re-use from `ssr/index.js`
+   */
+
+  try {
+    const password = '12345678';
+    const body = req.body;
+    const { 'invitation-token': token, email } = body;
+    const { organizationPk } = encryption.verifyToken(token, 'ac7iva7i0nC0d3');
+
+    const encryptedPassword = await encryption.encrypt(password);
+    const success = await userRepo.createUser(email, encryptedPassword);
+    if (success) {
+      createUserActivation(email);
+
+      const user = await userRepo.findUserByEmail(email);
+      const success = await organizationRepo.addUserToOrganization(organizationPk, user.pk);
+      if (!success) {
+        resp = new Response();
+        resp.setOperStatus(Response.OperStatus.FAILED);
+        resp.setOperMessage('[InviteMember]: Cannot add member to the group');
+        res.render('invitation', resp);
+        return;
+      }
+
+      const resp = new Response();
+      resp.setOperMessage(`[InviteMember]: An email has been sent to the email(${email}) to verify and activate the account`);
+      res.render('invitation', resp);
+    } else {
+      const resp = new Response();
+      resp.setOperStatus(Response.OperStatus.FAILED);
+      resp.setOperMessage('[InviteMember]: Cannot invite member');
+      res.render('invitation', resp);
+    }
+  } catch (e) {
+    const resp = new Response();
+    resp.setOperStatus(Response.OperStatus.FAILED);
+    resp.setOperMessage('[InviteMember]: Internal Server Error');
+    resp.setOperStack(e.stack);
+    res.render('invitation', resp);
+  }
+};
+
+const remindUserActivation = async (email, activationCode) => {
+  try {
+    const activationToken = encryption.createToken({ email }, activationCode);
+    const content = `<p>Click <a href="http://localhost:8080/users/activation?token=${activationToken}&email=${email}">this link</a> to activate your account</p>`;
+    await mailer.sendMail(email, 'Reminder - User Activation', content);
+  } catch (e) {
+    console.log(`[InviteMember]: Cannot remind user activation(email=${email}). ${e.message}`);
+  }
+};
+
+const postInvitation = async (req, res, next) => {
+  try {
+    const { 'invitation-token': token, email } = req.body;
+    const { organizationPk } = encryption.verifyToken(token, 'ac7iva7i0nC0d3');
+    let resp;
+
+    // Check user valid or not => signup with default password
+    const user = await userRepo.findUserByEmail(email);
+    console.log(email);
+    if (user) {
+      if (['banned', 'archived'].includes(user.status)) {
+        resp = new Response();
+        resp.setOperStatus(Response.OperStatus.FAILED);
+        resp.setOperMessage('[InviteMember]: Inviting member is invalid to add');
+        res.render('invitation', resp);
+        return
+      }
+
+      if (user.status === 'demo') {
+        const userActication = await userRepo.findUserActivationByEmail(email);
+        await remindUserActivation(email, userActication.activation_code);
+      }
+
+      const success = await organizationRepo.addUserToOrganization(organizationPk, user.pk);
+      if (!success) {
+        resp = new Response();
+        resp.setOperStatus(Response.OperStatus.FAILED);
+        resp.setOperMessage('[InviteMember]: Cannot add member to the group');
+        res.render('invitation', resp);
+        return;
+      }
+
+      resp = new Response();
+      resp.setOperMessage(`[InviteMember]: Member invitation sent`);
+      res.render('invitation', resp);
+      return;
+    }
+
+    next();
+  } catch (e) {
+    const resp = new Response();
+    resp.setOperStatus(Response.OperStatus.FAILED);
+    resp.setOperMessage('[InviteMember]: Internal Server Error');
+    resp.setOperStack(e.stack);
+    res.render('invitation', resp);
+  }
+};
+
 const ssr = express.Router();
 ssr.get('/activation', userActivationValidator, userActivation);
 ssr.get('/activation/renew', getRenew);
+ssr.get('/invitation', getInvitation);
+ssr.post('/invitation', invitationTokenValidator, postInvitation, signupAndAddMemberToOrganization);
 
 module.exports = ssr;
