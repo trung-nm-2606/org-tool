@@ -1,5 +1,6 @@
 const encryption = require('../../../shared/encryption');
 const Reponse = require('../../model/Response');
+const BaseController = require('../base/controller');
 const Dao = require('./dao');
 const Service = require('./service');
 
@@ -25,6 +26,46 @@ Controller.signUserUp = async (req, res, next) => {
   }
 
   next();
+};
+
+Controller.activateUser = async (req, res, next) => {
+  const { userActivation, view: { resp } } = res.locals;
+
+  if (userActivation.status === 'processed') {
+    resp.setOperMessage(`Your account was already activated`);
+    resp.setOperCode('UserActivationCode.Processed');
+    next();
+    return;
+  }
+
+  try {
+    await Dao.updateUserActivation(userActivation.pk, { status: 'processed' });
+    await Dao.updateUser(userActivation.user_pk, { status: 'active' });
+    resp.setOperMessage('Your account is activated successfully');
+    resp.setOperCode('UserActivationCode.Processed');
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
+};
+
+Controller.handleFailedActivation = async (err, req, res, next) => {
+  const { userActivation, needHandleFailedActivation } = res.locals;
+
+  if (userActivation && needHandleFailedActivation) {
+    try {
+      await Dao.updateUserActivation(userActivation.pk, {
+        retry_count: userActivation.retry_count + 1,
+        status: (userActivation.retry_count + 1) >= 3 ? 'cancelled' : userActivation.status
+      });
+    } catch (e) {
+      BaseController.logError(e);
+    }
+  }
+
+  next(err);
 };
 
 module.exports = Controller;

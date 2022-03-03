@@ -3,6 +3,7 @@ class BaseError extends Error {
     super(message);
     this.isOperational = isOperational;
     this.httpCode = httpCode;
+    this.operCode = '';
     this.originalError = originalError;
   }
 }

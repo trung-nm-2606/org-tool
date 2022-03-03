@@ -19,6 +19,15 @@ userRouter.post('/signup', [
   BaseController.render
 ]);
 
+userRouter.get('/activate', [
+  SsrView.activation,
+  Validator.validateActivationRequest,
+  Validator.validateUserActivation,
+  Controller.activateUser,
+  BaseController.render,
+  Controller.handleFailedActivation,
+]);
+
 userRouter.use(BaseController.handleError);
 
 module.exports = userRouter;

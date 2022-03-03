@@ -412,7 +412,7 @@ const postInvitation = async (req, res, next) => {
 };
 
 const ssr = express.Router();
-ssr.get('/activation', userActivationValidator, userActivation);
+ssr.get('/deprecated-activation', userActivationValidator, userActivation);
 ssr.get('/activation/renew', getRenew);
 ssr.get('/invitation', getInvitation);
 ssr.post('/invitation', invitationTokenValidator, postInvitation, signupAndAddMemberToOrganization);

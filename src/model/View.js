@@ -4,7 +4,7 @@ class View {
   constructor(isSsr, template) {
     this.isSsr = isSsr;
     this.template = template;
-    this.httpStatusCode = false;
+    this.httpCode = false;
     this.resp = new Response();
   }
 }

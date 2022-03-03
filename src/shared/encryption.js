@@ -19,6 +19,7 @@ encryption.createToken = (data, privateKey) => {
     return jwt.sign(data, privateKey);
   } catch (e) {
     console.log(`[Encryption.JWT]: Cannot create JWT token for data(${data}) with key(${privateKey})`);
+    console.log(e.stack);
     return '';
   }
 };

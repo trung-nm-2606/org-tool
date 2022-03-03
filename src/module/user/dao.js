@@ -1,6 +1,9 @@
 const db = require('../../shared/db');
-const InternalServerError = require("../../model/error/InternalServerError");
+const dateUtils = require('../../shared/date_utils');
+const DaoError = require("../../model/error/DaoError");
 const NotFoundError = require("../../model/error/NotFoundError");
+
+const FIELD_MAPPINGS = { fullName: 'full_name' };
 
 const Dao = {};
 
@@ -37,7 +40,7 @@ Dao.createUserActivation = async (email, activationCode) => {
   try {
     result = await db.query(query, [email, activationCode]);
   } catch (e) {
-    throw new InternalServerError(`Cannot create user activation for email(${email})`, e);
+    throw new DaoError(`Cannot create user activation for email(${email})`, e);
   }
 
   return result.insertId > 0;
@@ -51,10 +54,70 @@ Dao.createUser = async (email, encryptedPassword) => {
     const result = await db.query(query, [email, encryptedPassword]);
     insertedUser = await Dao.findUserByPk(result.insertId);
   } catch (e) {
-    throw new InternalServerError(`Cannot create user(email=${email})`, e);
+    throw new DaoError(`Cannot create user(email=${email})`, e);
   }
 
   return insertedUser;
+};
+
+Dao.updateUser = async (userPk, updateInfo) => {
+  const fields = [];
+  const args = [];
+  for (let key in updateInfo) {
+    const field = FIELD_MAPPINGS[key] || key;
+    fields.push(`${field}=COALESCE(?, ${field})`);
+    args.push(updateInfo[key]);
+  }
+  const updateFields = fields.join(',')
+  const query = `update users set ${updateFields}, updated_at = ? where pk = ?`;
+  args.push(dateUtils.getMariaDbCurrentTimestamp());
+  args.push(userPk);
+
+  try {
+    await db.query(query, args);
+  } catch (e) {
+    throw new DaoError(`Cannot update user(pk=${userPk})`, e);
+  }
+
+  return true;
+};
+
+Dao.findUserActivationByEmail = async (email) => {
+  const query = `select ua.*, users.pk as user_pk
+  from user_activations as ua
+  left join users on ua.email = users.email
+  where ua.email = ?`;
+  let userActivations = [];
+
+  try {
+    userActivations = await db.query(query, [email]);
+  } catch (e) {
+    throw new DaoError(`Cannot find user activation(email=${email})`, e);
+  }
+
+  return userActivations[0];
+};
+
+Dao.updateUserActivation = async (userActivationPk, updateInfo) => {
+  const fields = [];
+  const args = [];
+  for (let key in updateInfo) {
+    const field = FIELD_MAPPINGS[key] || key;
+    fields.push(`${field}=COALESCE(?, ${field})`);
+    args.push(updateInfo[key]);
+  }
+  const updateFields = fields.join(',')
+  const query = `update user_activations set ${updateFields}, updated_at = ? where pk = ?`;
+  args.push(dateUtils.getMariaDbCurrentTimestamp());
+  args.push(userActivationPk);
+
+  try {
+    await db.query(query, args);
+  } catch (e) {
+    throw new DaoError(`Cannot update user activation(pk=${userActivationPk})`, e);
+  }
+
+  return true;
 };
 
 module.exports = Dao;

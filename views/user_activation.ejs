@@ -10,7 +10,7 @@
 
     <% if (oper) {%>
     <h1>User activation <%= oper.status %></h1>
-    <p><%= oper.message %></p>
+    <p style="color: <%= oper.status === 'success' ? 'green' : 'red' %>;"><%= oper.message %></p>
     <%}%>
 
     <% if (oper && oper.status === 'success' && oper.code === 'UserActivationCode.Processed') {%>
