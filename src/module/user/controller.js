@@ -14,7 +14,6 @@ Controller.createUser = async (req, res, next) => {
   try {
     const encryptedPassword = await encryption.encrypt(password);
     await Dao.createUser(email, encryptedPassword);
-    resp.setOperMessage(`An email has been sent to your email(${email}) to verify and activate your account`);
   } catch (e) {
     next(e);
     return;

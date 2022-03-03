@@ -1,6 +1,5 @@
 const encryption = require('../../shared/encryption');
 const mailer = require('../../shared/mailer');
-const Dao = require('./dao');
 
 const Service = {};
 
@@ -11,7 +10,7 @@ Service.generateUserActivationToken = (email, activationCode) => {
 }
 
 Service.sendUserActivationEmail = async (email, activationToken) => {
-  const content = `<p>Click <a href="http://localhost:8080/users/activation?token=${activationToken}&email=${email}">this link</a> to activate your account</p>`;
+  const content = `<p>Click <a href="http://localhost:8080/users/activate?token=${activationToken}&email=${email}">this link</a> to activate your account</p>`;
   try {
     await mailer.sendMail(email, 'User Activation', content);
   } catch (e) {

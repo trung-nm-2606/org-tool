@@ -144,7 +144,7 @@ const ssr = express.Router();
 // ssr.get('/login', getLogin);
 // ssr.post('/login', emailPasswordValidator, postLogin);
 
-ssr.get('/logout', logout);
+// ssr.get('/logout', logout);
 
 ssr.use('/users', userSsr);
 
