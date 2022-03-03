@@ -1,5 +1,6 @@
 const encryption = require('../../../shared/encryption');
-const Reponse = require('../../model/Response');
+const session = require('../../../shared/session');
+const Response = require('../../model/Response');
 const BaseController = require('../base/controller');
 const Dao = require('./dao');
 const Service = require('./service');
@@ -111,6 +112,31 @@ Controller.handleFailedActivation = async (err, req, res, next) => {
   }
 
   next(err);
+};
+
+Controller.logUserIn = async (req, res, next) => {
+  const { email, password } = req.body;
+  const { view: { resp } } = res.locals;
+
+  try {
+    const user = await Dao.findUserByEmail(email);
+    const matched = await encryption.compare(password, user.encrypted_password);
+
+    if (matched) {
+      session.storeAuthenticatedUser(user, req);
+      res.redirect('/'); // Specially here only
+      return;
+    }
+
+    resp.setOperStatus(Response.OperStatus.FAILED);
+    resp.setOperMessage(`Your account was already activated`);
+    resp.setOperCode('UserActivationCode.Processed');
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
 };
 
 module.exports = Controller;

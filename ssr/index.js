@@ -138,11 +138,11 @@ const logout = (req, res) => {
 
 const ssr = express.Router();
 
-ssr.get('/signup', getSignup);
-ssr.post('/signup', emailPasswordValidator, signupValidator, postSignup);
+// ssr.get('/signup', getSignup);
+// ssr.post('/signup', emailPasswordValidator, signupValidator, postSignup);
 
-ssr.get('/login', getLogin);
-ssr.post('/login', emailPasswordValidator, postLogin);
+// ssr.get('/login', getLogin);
+// ssr.post('/login', emailPasswordValidator, postLogin);
 
 ssr.get('/logout', logout);
 

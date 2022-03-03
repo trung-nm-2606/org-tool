@@ -37,6 +37,19 @@ userRouter.get('/renew-activation', [
   BaseController.render
 ]);
 
+userRouter.get('/login', [
+  SsrView.login,
+  BaseController.render
+]);
+
+userRouter.post('/login', [
+  SsrView.login,
+  Validator.validateLoginForm,
+  Validator.validateLogin,
+  Controller.logUserIn,
+  BaseController.render
+]);
+
 userRouter.use(BaseController.handleError);
 
 module.exports = userRouter;

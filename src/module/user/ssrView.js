@@ -17,4 +17,9 @@ SsrView.renewActivation = (req, res, next) => {
   next();
 };
 
+SsrView.login = (req, res, next) => {
+  res.locals.view = new View(true, 'login');
+  next();
+};
+
 module.exports = SsrView;

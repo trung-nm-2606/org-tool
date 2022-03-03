@@ -23,10 +23,29 @@ Validator.validateSignup = async (req, res, next) => {
   const { email } = body;
 
   try {
-    console.log(this);
     const user = await Dao.findUserByEmail(email);
     if (user) {
       next(new ConflictError(`Email(${email}) is already registered for another account`));
+      return;
+    }
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
+};
+
+Validator.validateLoginForm = Validator.validateSignupForm;
+
+Validator.validateLogin = async (req, res, next) => {
+  const body = req.body;
+  const { email } = body;
+
+  try {
+    const user = await Dao.findUserByEmail(email);
+    if (!user) {
+      next(new NotFoundError(`User with email(${email}) is not found`));
       return;
     }
   } catch (e) {
