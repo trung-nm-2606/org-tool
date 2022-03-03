@@ -101,14 +101,23 @@ Validator.validateUserActivation = async (req, res, next) => {
     }
 
     if (userActivation.status === 'cancelled' || userActivation.retry_count >= 3) {
-      err = new UnprocessibleEntityError(`User activation with email(${email}) is expired`);
+      err = new UnprocessibleEntityError(`User activation with email(${email}) is exceeding retries`);
       err.operCode = 'UserActivationCode.Cancelled';
 
       next(err);
       return;
     }
 
-    const { email: uEmail } = encryption.verifyToken(token, userActivation.activation_code);
+    const { email: uEmail, activationCode } = encryption.verifyToken(token, userActivation.activation_code);
+
+    if (userActivation.activation_code !== activationCode) {
+      err = new UnprocessibleEntityError(`User activation with email(${email}) is expired`);
+      err.operCode = 'UserActivationCode.Old';
+
+      next(err);
+      return;
+    }
+
     if (uEmail !== email) {
       err = new BadRequestError(`User activation code is incorrect`);
       err.operCode = 'UserActivationCode.Mismatched';
