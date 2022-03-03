@@ -10,6 +10,9 @@
       <%- include('./partials/alert_success'); %>
       <%if (locals.oper && oper.status === 'success') {%>
       <% if (locals.payload) {%>
+        <% if (locals.payload.groupName) {%>
+        <p>You are invited to join group <strong><%= locals.payload.groupName %></strong></p>
+        <%}%>
       <div>
         <div class="mb-3">
           <label for="email" class="form-label">Email:</label>
@@ -20,7 +23,7 @@
           <input id="password" type="password" name="password" class="form-control">
         </div> -->
         <div>
-          <input id="invitation-token" type="hidden" name="invitation-token" value="<%=locals.payload%>">
+          <input id="invitation-token" type="hidden" name="invitation-token" value="<%=locals.payload.token%>">
         </div>
         <button class="btn btn-outline-primary" type="submit">Accept Invitation</button>
       </div>

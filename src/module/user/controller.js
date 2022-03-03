@@ -144,7 +144,7 @@ Controller.logUserOut = (req, res) => {
   res.redirect('/users/login'); // Specially here only
 };
 
-Controller.getInviation = (req, res, next) => {
+Controller.getInviation = async (req, res, next) => {
   const { token } = req.query;
   const { view: { resp } } = res.locals;
 
@@ -155,8 +155,16 @@ Controller.getInviation = (req, res, next) => {
     return;
   }
 
+  const { organizationPk } = encryption.verifyToken(token, 'ac7iva7i0nC0d3');
+  let organization = {};
+  try {
+    organization = await OrganizationDao.findOrganizationByPk(organizationPk);
+  } catch (e) {
+    BaseController.logError(e);
+  }
+
   resp.setOperStatus(Response.OperStatus.SUCCESS);
-  resp.setPayload(token);
+  resp.setPayload({ token, groupName: organization.name });
 
   next();
 };
@@ -177,6 +185,17 @@ Controller.inviteUser = async (req, res, next) => {
     } catch (e) {
       BaseController.logError(e);
     }
+  }
+
+  try {
+    const [member] = await OrganizationDao.findMembersByOrganizationPk(organizationPk, userPk);
+    if (member) {
+      resp.setOperMessage(`User with email(${email}) is already a member of group(${name})`);
+      next();
+      return;
+    }
+  } catch (e) {
+    BaseController.logError(e);
   }
 
   try {
