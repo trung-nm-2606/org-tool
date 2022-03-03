@@ -4,6 +4,7 @@ const NotFoundError = require("../../model/error/NotFoundError");
 const UnprocessibleEntityError = require("../../model/error/UnprocessableEntityError");
 const encryption = require("../../shared/encryption");
 const Dao = require('./dao');
+const OrganizationDao = require('../organization/dao');
 
 const Validator = {};
 
@@ -82,7 +83,7 @@ Validator.validateUserActivation = async (req, res, next) => {
     }
 
     if (['banned', 'archived'].includes(user.status)) {
-      err = new UnprocessibleEntityError(`Your account is banned or archived. Please contact CS team`);
+      err = new UnprocessibleEntityError(`Your account with email(${email}) is banned or archived. Please contact CS team`);
       err.operCode = 'UserActivationCode.End';
 
       next(err);
@@ -146,7 +147,7 @@ Validator.validateRenewUserActivation = async (req, res, next) => {
   try {
     user = await Dao.findUserByEmail(email);
     if (!user) {
-      err = new NotFoundError(`User with email(${email}) is not found`);
+      err = new NotFoundError(`Account with email(${email}) is not found`);
       err.operCode = 'UserActivationCode.Renew.UserNotFound';
 
       next(err);
@@ -154,7 +155,7 @@ Validator.validateRenewUserActivation = async (req, res, next) => {
     }
 
     if (['banned', 'archived'].includes(user.status)) {
-      err = new UnprocessibleEntityError(`Your account is banned or archived. Please contact CS team`);
+      err = new UnprocessibleEntityError(`Your account with email(${email}) is banned or archived. Please contact CS team`);
       err.operCode = 'UserActivationCode.End';
 
       next(err);
@@ -169,6 +170,68 @@ Validator.validateRenewUserActivation = async (req, res, next) => {
 
   res.locals.user = user;
   res.locals.userActivation = userActivation;
+  next();
+};
+
+Validator.validateInvitationToken = async (req, res, next) => {
+  const { 'invitation-token': token, email } = req.body;
+  let user, invitationData, organization;
+
+  try {
+    invitationData = encryption.verifyToken(token, 'ac7iva7i0nC0d3');
+
+    const {
+      organizationOwnerPk,
+      organizationOwnerEmail,
+      organizationPk
+    } = invitationData;
+
+    const ownerUser = await Dao.findUserByEmail(organizationOwnerEmail);
+    if (!ownerUser) {
+      next(new NotFoundError('Invalid invitation token. Invitation owner user is not found'));
+      return;
+    }
+
+    if (ownerUser.pk !== organizationOwnerPk) {
+      next(new BadRequestError('Invalid invitation token. Invitation owner user is incorrect'));
+      return;
+    }
+
+    const organizations = await OrganizationDao.findOrganizationsOwnedByUserPk(ownerUser.pk);
+    organization = organizations.find(({ pk }) => +pk === +organizationPk);
+    if (!organization) {
+      const err = new NotFoundError('Invalid invitation token. Group is not found');
+      err.operCode = 'group.notfound';
+      next(err);
+      return;
+    }
+
+    user = await Dao.findUserByEmail(email);
+    if (!user) {
+      const err = new NotFoundError(`Invalid invitation token. User with email(${email}) is not found`);
+      err.operCode = 'user.notfound';
+      next();
+      return;
+    }
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  res.locals.invitationData = invitationData;
+  res.locals.user = user;
+  res.locals.organization = organization;
+  next();
+};
+
+Validator.validateAddingMember = (req, res, next) => {
+  const { user } = res.locals;
+
+  if (['banned', 'archived'].includes(user.status)) {
+    next(new UnprocessibleEntityError(`User with email(${user.email}) is banned or archived. Please contact CS team`))
+    return;
+  }
+
   next();
 };
 

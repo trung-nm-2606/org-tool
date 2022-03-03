@@ -1,15 +1,17 @@
 const encryption = require('../../../shared/encryption');
 const session = require('../../../shared/session');
+const BadRequestError = require('../../model/error/BadRequestError');
 const Response = require('../../model/Response');
 const BaseController = require('../base/controller');
 const Dao = require('./dao');
 const Service = require('./service');
+const OrganizationDao = require('../organization/dao');
+const NotFoundError = require('../../model/error/NotFoundError');
 
 const Controller = {};
 
 Controller.createUser = async (req, res, next) => {
   const { email, password } = req.body;
-  const { view: { resp } } = res.locals;
 
   try {
     const encryptedPassword = await encryption.encrypt(password);
@@ -30,7 +32,7 @@ Controller.generateUserActivation = async (req, res, next) => {
 
   try {
     await Dao.createUserActivation(email, activationCode);
-    await Service.sendUserActivationEmail(email, activationToken);
+    Service.sendUserActivationEmail(email, activationToken);
 
     resp.setOperMessage(`An email has been sent to your email(${email}) to verify and activate your account`);
   } catch (e) {
@@ -80,7 +82,7 @@ Controller.renewUserActivation = async (req, res, next) => {
         renew_count: userActivation.renew_count + 1
       });
       await Dao.updateUser(user.pk, { status: 'demo' });
-      await Service.sendUserActivationEmail(email, activationToken);
+      Service.sendUserActivationEmail(email, activationToken, 'Renew');
 
       resp.setOperMessage(`An email has been sent to your email(${email}) to verify and activate your account`);
     } catch (e) {
@@ -140,6 +142,52 @@ Controller.logUserIn = async (req, res, next) => {
 Controller.logUserOut = (req, res) => {
   session.removeAuthenticatedUser(req);
   res.redirect('/users/login'); // Specially here only
+};
+
+Controller.getInviation = (req, res, next) => {
+  const { token } = req.query;
+  const { view: { resp } } = res.locals;
+
+  if (!token) {
+    // Specially here only
+    // This is too simple to split to a separate validator
+    next(new BadRequestError('Invalid invitation token'));
+    return;
+  }
+
+  resp.setOperStatus(Response.OperStatus.SUCCESS);
+  resp.setPayload(token);
+
+  next();
+};
+
+Controller.inviteUser = async (req, res, next) => {
+  const { user, organization, view: { resp } } = res.locals;
+  const { pk: organizationPk, name } = organization;
+  const { pk: userPk, email, status: userStatus } = user;
+
+  if (userStatus === 'demo') {
+    try {
+      const userActication = await Dao.findUserActivationByEmail(email);
+      if (!userActication) throw new NotFoundError(`User activation with email(${email}) is not found to remind activation`);
+
+      const { activation_code: activationCode } = userActication;
+      const activationToken = Service.generateUserActivationToken(email, activationCode);
+      Service.sendUserActivationEmail(email, activationToken, 'Remind');
+    } catch (e) {
+      BaseController.logError(e);
+    }
+  }
+
+  try {
+    await OrganizationDao.addUserToOrganization(organizationPk, userPk);
+    resp.setOperMessage(`User with email(${email}) has been added to be a member of group(${name})`);
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
 };
 
 module.exports = Controller;

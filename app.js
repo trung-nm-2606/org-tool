@@ -7,7 +7,6 @@ const logger = require('morgan');
 
 const app = express();
 const api = require('./api');
-const ssr = require('./ssr');
 const UserRouter = require('./src/module/user/router');
 
 // view engine setup
@@ -34,8 +33,6 @@ app.get('/', (req, res) => {
 app.use(express.static('react-app/build'));
 
 app.use('/api', api);
-app.use(ssr);
-
 app.use('/signup', (req, res) => res.redirect('/users/signup'));
 app.use('/login', (req, res) => res.redirect('/users/login'));
 app.use('/logout', (req, res) => res.redirect('/users/logout'));

@@ -9,6 +9,7 @@
       <%- include('./partials/alert_error'); %>
       <%- include('./partials/alert_success'); %>
       <%if (locals.oper && oper.status === 'success') {%>
+      <% if (locals.payload) {%>
       <div>
         <div class="mb-3">
           <label for="email" class="form-label">Email:</label>
@@ -23,6 +24,7 @@
         </div>
         <button class="btn btn-outline-primary" type="submit">Accept Invitation</button>
       </div>
+      <%}%>
       <%}%>
     </form>
 	  <%- include('./partials/footer'); %>

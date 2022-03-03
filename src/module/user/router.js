@@ -54,6 +54,20 @@ userRouter.get('/logout', [
   Controller.logUserOut
 ]);
 
+userRouter.get('/invitation', [
+  SsrView.invite,
+  Controller.getInviation,
+  BaseController.render
+]);
+
+userRouter.post('/invitation', [
+  SsrView.invite,
+  Validator.validateInvitationToken,
+  Validator.validateAddingMember,
+  Controller.inviteUser,
+  BaseController.render
+]);
+
 userRouter.use(BaseController.handleError);
 
 module.exports = userRouter;

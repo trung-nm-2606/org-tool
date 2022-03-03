@@ -9,10 +9,12 @@ Service.generateUserActivationToken = (email, activationCode) => {
   return encryption.createToken({ email, activationCode }, activationCode);
 }
 
-Service.sendUserActivationEmail = async (email, activationToken) => {
+Service.sendUserActivationEmail = (email, activationToken, subjectSuffix) => {
+  const subject = subjectSuffix ? `User Activation - ${subjectSuffix}` : 'User Activation';
   const content = `<p>Click <a href="http://localhost:8080/users/activate?token=${activationToken}&email=${email}">this link</a> to activate your account</p>`;
+
   try {
-    await mailer.sendMail(email, 'User Activation', content);
+    mailer.sendMail(email, subject, content);
   } catch (e) {
     throw e;
   }

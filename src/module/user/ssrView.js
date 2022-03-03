@@ -22,4 +22,9 @@ SsrView.login = (req, res, next) => {
   next();
 };
 
+SsrView.invite = (req, res, next) => {
+  res.locals.view = new View(true, 'invitation');
+  next();
+};
+
 module.exports = SsrView;
