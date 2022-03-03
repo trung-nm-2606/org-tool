@@ -50,6 +50,10 @@ userRouter.post('/login', [
   BaseController.render
 ]);
 
+userRouter.get('/logout', [
+  Controller.logUserOut
+]);
+
 userRouter.use(BaseController.handleError);
 
 module.exports = userRouter;

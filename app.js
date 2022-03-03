@@ -38,6 +38,7 @@ app.use(ssr);
 
 app.use('/signup', (req, res) => res.redirect('/users/signup'));
 app.use('/login', (req, res) => res.redirect('/users/login'));
+app.use('/logout', (req, res) => res.redirect('/users/logout'));
 app.use('/users', UserRouter);
 
 // All not-found routes served by ExpressJs will be directed to ReactJS

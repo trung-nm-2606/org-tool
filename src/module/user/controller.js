@@ -129,14 +129,18 @@ Controller.logUserIn = async (req, res, next) => {
     }
 
     resp.setOperStatus(Response.OperStatus.FAILED);
-    resp.setOperMessage(`Your account was already activated`);
-    resp.setOperCode('UserActivationCode.Processed');
+    resp.setOperMessage(`Wrong email/password`);
   } catch (e) {
     next(e);
     return;
   }
 
   next();
+};
+
+Controller.logUserOut = (req, res) => {
+  session.removeAuthenticatedUser(req);
+  res.redirect('/users/login'); // Specially here only
 };
 
 module.exports = Controller;
