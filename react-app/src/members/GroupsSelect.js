@@ -16,7 +16,7 @@ const GroupsSelect = ({ initGroupPk, onChange }) => {
         const initGroup = groups.find(({ pk }) => initGroupPk === pk);
         const group = initGroup || groups[0];
         onChange(group?.pk);
-        setSelectedGroup(group);
+        setSelectedGroup(group?.name);
       })
       .catch(() => setHasError(true))
       .finally(() => setGettingGroups(false))
@@ -34,7 +34,7 @@ const GroupsSelect = ({ initGroupPk, onChange }) => {
   return (
     <div class="dropdown">
       <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="groups-selector" data-bs-toggle="dropdown" aria-expanded="false">
-        {selectedGroup?.name || 'Select a group'}
+        {selectedGroup || 'Select a group'}
       </button>
       <ul class="dropdown-menu" aria-labelledby="groups-selector">
         {groups.map(({ pk, name }, index) => (
@@ -45,7 +45,7 @@ const GroupsSelect = ({ initGroupPk, onChange }) => {
               onChange(pk);
             }}
           >
-            <span className="dropdown-item">{name}</span>
+            <span className={`dropdown-item${name === selectedGroup ? ' text-primary' : ''}`}>{name}</span>
           </li>
         ))}
         {hasError && (

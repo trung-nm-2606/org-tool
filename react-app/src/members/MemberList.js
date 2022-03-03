@@ -2,8 +2,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import InviteMemberBtn from './InviteMemberBtn';
 import RemoveMemberBtn from './RemoveMemberBtn';
+import { useSelector } from 'react-redux';
 
 const MemberList = ({ groupPk }) => {
+  const authUser = useSelector(state => state.app.authUser);
   const [message, setMessage] = useState('');
   const [members, setMembers] = useState([]);
   const [gettingMembers, setGettingMembers] = useState(true);
@@ -69,8 +71,8 @@ const MemberList = ({ groupPk }) => {
             {members.map(({ pk, name, full_name, email, status, role }, index) => (
               <tr key={`${pk}-${name}-${index}`}>
                 <th scope="row">{index + 1}</th>
-                <td>
-                  <span className="d-block">{`${name}${role === 'owner' ? ' (you)' : ''}`}</span>
+                <td className={authUser?.pk === pk ? 'text-primary' : ''}>
+                  <span className="d-block">{`${name}${authUser?.pk === pk ? ' (you)' : ''}`}</span>
                   <span className="d-block text-muted">{full_name}</span>
                 </td>
                 <td>{email}</td>
