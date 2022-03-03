@@ -15,7 +15,8 @@ userRouter.post('/signup', [
   SsrView.signup,
   Validator.validateSignupForm,
   Validator.validateSignup,
-  Controller.signUserUp,
+  Controller.createUser,
+  Controller.generateUserActivation,
   BaseController.render
 ]);
 
@@ -26,6 +27,14 @@ userRouter.get('/activate', [
   Controller.activateUser,
   BaseController.render,
   Controller.handleFailedActivation,
+]);
+
+userRouter.get('/renew-activation', [
+  SsrView.renewActivation,
+  Validator.validateRenewActivationRequest,
+  Validator.validateRenewUserActivation,
+  Controller.renewUserActivation,
+  BaseController.render
 ]);
 
 userRouter.use(BaseController.handleError);

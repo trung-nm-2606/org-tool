@@ -6,20 +6,33 @@ const Service = require('./service');
 
 const Controller = {};
 
-Controller.signUserUp = async (req, res, next) => {
+Controller.createUser = async (req, res, next) => {
   const { email, password } = req.body;
   const { view: { resp } } = res.locals;
 
   try {
     const encryptedPassword = await encryption.encrypt(password);
-    const insertedUser = await Dao.createUser(email, encryptedPassword);
-    if (insertedUser) {
-      await Service.createUserActivation(email);
-      resp.setOperMessage(`An email has been sent to your email(${email}) to verify and activate your account`);
-    } else {
-      resp.setOperStatus(Reponse.OperStatus.FAILED);
-      resp.setOperMessage(`Cannot register a new account for email(${email})`);
-    }
+    await Dao.createUser(email, encryptedPassword);
+    resp.setOperMessage(`An email has been sent to your email(${email}) to verify and activate your account`);
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
+};
+
+Controller.generateUserActivation = async (req, res, next) => {
+  const { email } = req.body;
+  const { view: { resp } } = res.locals;
+  const activationCode = Service.generateUserActivationCode();
+  const activationToken = Service.generateUserActivationToken(email, activationCode);
+
+  try {
+    await Dao.createUserActivation(email, activationCode);
+    await Service.sendUserActivationEmail(email, activationToken);
+
+    resp.setOperMessage(`An email has been sent to your email(${email}) to verify and activate your account`);
   } catch (e) {
     next(e);
     return;
@@ -45,6 +58,38 @@ Controller.activateUser = async (req, res, next) => {
     resp.setOperCode('UserActivationCode.Processed');
   } catch (e) {
     next(e);
+    return;
+  }
+
+  next();
+};
+
+Controller.renewUserActivation = async (req, res, next) => {
+  const { email } = req.query;
+  const { user, userActivation, view: { resp } } = res.locals;
+
+  if (userActivation) {
+    const activationCode = Service.generateUserActivationCode();
+    const activationToken = Service.generateUserActivationToken(email, activationCode);
+
+    try {
+      await Dao.updateUserActivation(userActivation.pk, {
+        activation_code: activationCode,
+        retry_count: 0,
+        status: 'pending',
+        renew_count: userActivation.renew_count + 1
+      });
+      await Dao.updateUser(user.pk, { status: 'demo' });
+      await Service.sendUserActivationEmail(email, activationToken);
+
+      resp.setOperMessage(`An email has been sent to your email(${email}) to verify and activate your account`);
+    } catch (e) {
+      next(e);
+      return;
+    }
+  } else {
+    req.body.email = email;
+    Controller.generateUserActivation(req, res, next);
     return;
   }
 

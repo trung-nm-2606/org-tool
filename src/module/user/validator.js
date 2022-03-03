@@ -109,4 +109,48 @@ Validator.validateUserActivation = async (req, res, next) => {
   next();
 };
 
+Validator.validateRenewActivationRequest = (req, res, next) => {
+  const { email } = req.query;
+  if (!email) {
+    next(new BadRequestError('Email is missing'));
+    return;
+  }
+
+  next();
+};
+
+Validator.validateRenewUserActivation = async (req, res, next) => {
+  const { email } = req.query;
+  let user, userActivation;
+  let err;
+
+  try {
+    user = await Dao.findUserByEmail(email);
+    if (!user) {
+      err = new NotFoundError(`User with email(${email}) is not found`);
+      err.operCode = 'UserActivationCode.Renew.UserNotFound';
+
+      next(err);
+      return;
+    }
+
+    if (['banned', 'archived'].includes(user.status)) {
+      err = new UnprocessibleEntityError(`Your account is banned or archived. Please contact CS team`);
+      err.operCode = 'UserActivationCode.End';
+
+      next(err);
+      return;
+    }
+
+    userActivation = await Dao.findUserActivationByEmail(email);
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  res.locals.user = user;
+  res.locals.userActivation = userActivation;
+  next();
+};
+
 module.exports = Validator;
