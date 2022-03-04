@@ -1,18 +1,6 @@
 import React from 'react';
 import { BrowserRouter, NavLink } from "react-router-dom";
 import { List, PeopleFill, BoxArrowRight, Bank } from 'react-bootstrap-icons';
-import AppNav from './AppNav';
-
-// const Layout = ({ children }) => {
-//   return (
-//     <BrowserRouter>
-//       <AppNav />
-//       <div className="container-fluid pt-3">
-//         {children}
-//       </div>
-//     </BrowserRouter>
-//   );
-// };
 
 const Layout = ({ children }) => {
   return (
@@ -43,25 +31,7 @@ const Layout = ({ children }) => {
             </a>
           </div>
         </div>
-        <div className="function-side-bar">
-          {/* <div className="top-bar"></div> */}
-          <ul className="list-group list-group-flush">
-            <li role="button" className="list-group-item text-black-50">
-              <NavLink className="nav-link" to="/management/dashboard">Dashboard</NavLink>
-            </li>
-            <li role="button" className="list-group-item text-black-50">
-              <NavLink className="nav-link" to="/management/groups">Groups</NavLink>
-            </li>
-            <li role="button" className="list-group-item text-black-50">
-              <NavLink className="nav-link" to="/management/members">Members</NavLink>
-            </li>
-          </ul>
-        </div>
-        <div className="container-fluid bg-white working-space mt-2 p-3">
-          <div className="bg-white">
-          {children}
-          </div>
-        </div>
+        {children}
       </div>
     </BrowserRouter>
   );

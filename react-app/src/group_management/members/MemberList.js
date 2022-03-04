@@ -62,7 +62,7 @@ const MemberList = ({ groupPk }) => {
         </div>
       )}
       <div className="table-responsive">
-        <table class="table table-striped table-hover fw-light">
+        <table className="table table-striped table-hover fw-light">
           <thead>
             <tr>
               <th scope="col">#</th>

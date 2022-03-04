@@ -32,11 +32,11 @@ const GroupsSelect = ({ initGroupPk, onChange }) => {
   }
 
   return (
-    <div class="dropdown">
-      <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="groups-selector" data-bs-toggle="dropdown" aria-expanded="false">
+    <div className="dropdown">
+      <button className="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="groups-selector" data-bs-toggle="dropdown" aria-expanded="false">
         {selectedGroup || 'Select a group'}
       </button>
-      <ul class="dropdown-menu" aria-labelledby="groups-selector">
+      <ul className="dropdown-menu" aria-labelledby="groups-selector">
         {groups.map(({ pk, name }, index) => (
           <li
             key={`${pk}-${name}-${index}`}

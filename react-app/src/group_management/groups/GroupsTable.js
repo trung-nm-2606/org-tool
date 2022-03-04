@@ -50,7 +50,7 @@ const GroupsTable = ({ data = [] }) => {
         </div>
       )}
       <div className="table-responsive">
-        <table class="table table-striped table-hover fw-light">
+        <table className="table table-striped table-hover fw-light">
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -70,7 +70,7 @@ const GroupsTable = ({ data = [] }) => {
                 <td className="align-middle">{status}</td>
                 <td className="align-middle">{role}</td>
                 <td className="align-middle">
-                  <button type="button" class="btn btn-link" onClick={() => viewMembers(pk)}>
+                  <button type="button" className="btn btn-link" onClick={() => viewMembers(pk)}>
                     {`${members_count} members`}
                   </button>
                 </td>

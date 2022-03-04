@@ -41,27 +41,27 @@ const InviteMemberBtn = ({ groupPk, onSuccess }) => {
     <>
       <button
         type="button"
-        class="btn btn-outline-primary btn-sm"
+        className="btn btn-outline-primary btn-sm"
         data-bs-toggle="modal"
         data-bs-target="#invite-member-modal"
         onClick={clearForm}
       >
         Invite Member
       </button>
-      <div class="modal fade" id="invite-member-modal" tabindex="-1" aria-labelledby="invite-member-modal">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Invite Member</h5>
+      <div className="modal fade" id="invite-member-modal" tabindex="-1" aria-labelledby="invite-member-modal">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Invite Member</h5>
               <button
                 type="button"
-                class="btn-close"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
                 ref={ref}
               />
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               {message && (
                 <div className="alert alert-danger alert-dismissible fade show mb-3" role="alert">
                   {message}
@@ -82,11 +82,11 @@ const InviteMemberBtn = ({ groupPk, onSuccess }) => {
                 />
               </div>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn" data-bs-dismiss="modal">Cancel</button>
+            <div className="modal-footer">
+              <button type="button" className="btn" data-bs-dismiss="modal">Cancel</button>
               <button
                 type="button"
-                class="btn btn-primary"
+                className="btn btn-primary"
                 onClick={inviteMember}
                 disabled={submitting}
               >

@@ -11,27 +11,27 @@ const App = () => {
   const authUser = useSelector(state => state.app.authUser);
 
   useEffect(() => {
-    dispatch(appRedux.actions.setLoginAt(new Date()));
-    axios.interceptors.response.use((response) => {
-      return response;
-    }, (error) => {
-      if (error.response.status === 401) {
-        console.log('Unauthenticated User')
-        window.location.reload();
-      }
-      return Promise.reject(error.response);
-    });
-    const id = setInterval(() => {
-      axios
-        .get('/api/users/ping-auth')
-        .then(({ data }) => dispatch(appRedux.actions.setAuthUser(data)))
-      ;
-    }, 5 * 1000);
-    axios
-      .get('/api/users/ping-auth')
-      .then(({ data }) => dispatch(appRedux.actions.setAuthUser(data)))
-    ;
-    return () => clearInterval(id);
+    // dispatch(appRedux.actions.setLoginAt(new Date()));
+    // axios.interceptors.response.use((response) => {
+    //   return response;
+    // }, (error) => {
+    //   if (error.response.status === 401) {
+    //     console.log('Unauthenticated User')
+    //     window.location.reload();
+    //   }
+    //   return Promise.reject(error.response);
+    // });
+    // const id = setInterval(() => {
+    //   axios
+    //     .get('/api/users/ping-auth')
+    //     .then(({ data }) => dispatch(appRedux.actions.setAuthUser(data)))
+    //   ;
+    // }, 5 * 1000);
+    // axios
+    //   .get('/api/users/ping-auth')
+    //   .then(({ data }) => dispatch(appRedux.actions.setAuthUser(data)))
+    // ;
+    // return () => clearInterval(id);
   }, [/* componentDidMount */]);
 
   // if (!authUser) {
