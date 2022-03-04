@@ -1,6 +1,6 @@
 const express = require('express');
 const Response = require('../shared/Response');
-const userRepo = require('../repo/users');
+const userRepo = require('../../repo/users');
 const session = require('../shared/session');
 
 const update = async (req, res) => {

@@ -1,7 +1,7 @@
 const express = require('express');
-const session = require('../shared/session');
-const Response = require('../shared/Response');
-const organizationRepo = require('../repo/organizations');
+const session = require('../../shared/session');
+const Response = require('../../shared/Response');
+const organizationRepo = require('../../repo/organizations');
 
 const organizationValidator = (req, res, next) => {
   const { name } = req.body;

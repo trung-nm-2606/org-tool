@@ -1,5 +1,5 @@
-const db = require('../shared/db');
-const dateUtils = require('../shared/date_utils');
+const db = require('../src/shared/db');
+const dateUtils = require('../src/shared/date_utils');
 
 const repo = {};
 

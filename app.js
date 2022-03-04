@@ -6,7 +6,7 @@ const session = require('express-session');
 const logger = require('morgan');
 
 const app = express();
-const api = require('./api');
+const api = require('./src/api');
 const UserRouter = require('./src/module/user/router');
 
 // view engine setup

@@ -1,9 +1,9 @@
-const session = require('../shared/session');
-const Response = require('../shared/Response');
-const userRepo = require('../repo/users');
-const organizationRepo = require('../repo/organizations');
-const encryption = require('../shared/encryption');
-const mailer = require('../shared/mailer');
+const session = require('../../shared/session');
+const Response = require('../../shared/Response');
+const userRepo = require('../../repo/users');
+const organizationRepo = require('../../repo/organizations');
+const encryption = require('../../shared/encryption');
+const mailer = require('../../shared/mailer');
 
 const getMembers = async (req, res) => {
   try {
