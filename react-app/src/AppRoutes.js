@@ -1,7 +1,8 @@
 import React, { Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
-const Home = React.lazy(() => import('./Home'));
+const ManagementDashboard = React.lazy(() => import('./ManagementDashboard'));
+const BankDashboard = React.lazy(() => import('./BankDashboard'));
 const Groups = React.lazy(() => import('./groups'));
 const Members = React.lazy(() => import('./members'));
 
@@ -12,9 +13,14 @@ const Loading = () => (
 const AppRoutes = () => (
   <Suspense fallback={<Loading/>}>
     <Routes>
-      <Route path="/groups/*" element={<Groups />} />
-      <Route path="/members" element={<Members />} />
-      <Route path="/" element={<Home />} />
+      <Route path="/management/groups/*" element={<Groups />} />
+      <Route path="/management/members" element={<Members />} />
+      <Route path="/management/dashboard" element={<ManagementDashboard />} />
+      <Route path="/bank" element={<BankDashboard />} />
+      <Route
+        path="*"
+        element={<Navigate to="/management/dashboard" />}
+      />
     </Routes>
   </Suspense>
 );

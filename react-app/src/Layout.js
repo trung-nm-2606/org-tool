@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, NavLink } from "react-router-dom";
-import { List, PeopleFill, BoxArrowRight } from 'react-bootstrap-icons';
+import { List, PeopleFill, BoxArrowRight, Bank } from 'react-bootstrap-icons';
 import AppNav from './AppNav';
 
 // const Layout = ({ children }) => {
@@ -23,9 +23,17 @@ const Layout = ({ children }) => {
             <div className="top-bar d-flex flex-column align-items-center justify-content-center">
               <List role="button" size={24} />
             </div>
-            <div className="menu-icon text-black-50 active">
-              <PeopleFill role="button" size={24} />
-              <span className="label">Group Mgnt.</span>
+            <div className="menu-icon text-black-50">
+              <NavLink to="/management">
+                <PeopleFill size={24} />
+                <span className="label">Group Mgnt.</span>
+              </NavLink>
+            </div>
+            <div className="menu-icon text-black-50">
+              <NavLink to="/bank">
+                <Bank size={24} />
+                <span className="label">Fund</span>
+              </NavLink>
             </div>
           </div>
           <div className="d-flex flex-column align-items-center justify-content-end">
@@ -39,13 +47,13 @@ const Layout = ({ children }) => {
           {/* <div className="top-bar"></div> */}
           <ul className="list-group list-group-flush">
             <li role="button" className="list-group-item text-black-50">
-              <NavLink className="nav-link" to="/">Home</NavLink>
+              <NavLink className="nav-link" to="/management/dashboard">Dashboard</NavLink>
             </li>
             <li role="button" className="list-group-item text-black-50">
-              <NavLink className="nav-link" to="/groups">Groups</NavLink>
+              <NavLink className="nav-link" to="/management/groups">Groups</NavLink>
             </li>
             <li role="button" className="list-group-item text-black-50">
-              <NavLink className="nav-link" to="/members">Members</NavLink>
+              <NavLink className="nav-link" to="/management/members">Members</NavLink>
             </li>
           </ul>
         </div>

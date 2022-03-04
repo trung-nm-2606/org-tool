@@ -15,17 +15,29 @@ body {
 }
 
 .app-side-bar .menu-icon {
-  display: flex;
+  /* display: flex;
   width: 100%;
   min-height: 3rem;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.5rem; */
+  width: 100%;
 }
 
-.app-side-bar .menu-icon.active {
+.app-side-bar .menu-icon a {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem 0;
+  color: inherit !important;
+  width: 100%;
+}
+
+.app-side-bar .menu-icon a.active {
   color: #1a73e8 !important;
 }
 
@@ -63,7 +75,8 @@ body {
   padding: 0;
 }
 
-.function-side-bar li a:hover, .active {
+.function-side-bar li a:hover,
+.function-side-bar li a.active {
   background-color: #d2e3fc !important;
   color: #1a73e8 !important;
 }
