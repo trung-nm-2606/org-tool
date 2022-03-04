@@ -28,7 +28,7 @@ const GroupForm = ({ group }) => {
         if (oper?.status === 'failed') {
           setMessage(oper?.message);
         } else {
-          navigate('/groups');
+          navigate('/management/groups');
         }
       })
       .catch(() => setMessage(apiErrorMessage))
@@ -81,7 +81,7 @@ const GroupForm = ({ group }) => {
             disabled={submitting || !name}
             className="btn btn-outline-primary me-2"
           />
-          <Link className="btn" to="/groups">Cancel</Link>
+          <Link className="btn" to="/management/groups">Cancel</Link>
         </div>
       </form>
     </>

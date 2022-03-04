@@ -33,9 +33,9 @@ const GroupsTable = ({ data = [] }) => {
 
   const onErrorDeleting = useCallback((groupName) => setMessage(`Cannot delete the group ${groupName}`), []);
 
-  const updateGroup = (group) => navigate('/groups/update', { state: group });
+  const updateGroup = (group) => navigate('/management/groups/update', { state: group });
 
-  const viewMembers = (groupPk) => navigate('/members', { state: groupPk });
+  const viewMembers = (groupPk) => navigate('/management/members', { state: groupPk });
 
   if (gettingGroups) {
     return (<div>Getting groups...</div>);

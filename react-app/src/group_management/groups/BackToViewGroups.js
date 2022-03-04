@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const BackToViewGroups = () => {
   return (
-    <Link className="btn btn-sm btn-outline-primary" to="/groups">
+    <Link className="btn btn-sm btn-outline-primary" to="/management/groups">
       Cancel
     </Link>
   );
