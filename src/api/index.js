@@ -10,6 +10,6 @@ api.use('/users', usersApi);
 api.use('/groups', organizationsApi);
 api.use('/members', membersApi);
 api.use('/app', appApi);
-api.use('*', (req, res) => res.status(404).json({ oper: { status: 'failed', message: 'API endpoint Not found' } }));
+// api.use('*', (req, res) => res.status(404).json({ oper: { status: 'failed', message: 'API endpoint Not found' } }));
 
 module.exports = api;

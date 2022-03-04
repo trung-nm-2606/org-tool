@@ -1,17 +1,17 @@
 const express = require('express');
-const BaseController = require('../base/controller');
-const SsrView = require('./ssrView');
-const Validator = require('./validator');
-const Controller = require('./controller');
+const BaseController = require('../../base/controller');
+const SsrView = require('../ssrView');
+const Validator = require('../validator');
+const Controller = require('../controller');
 
-const userRouter = express.Router();
+const ssrRouter = express.Router();
 
-userRouter.get('/signup', [
+ssrRouter.get('/signup', [
   SsrView.signup,
   BaseController.render
 ]);
 
-userRouter.post('/signup', [
+ssrRouter.post('/signup', [
   SsrView.signup,
   Validator.validateSignupForm,
   Validator.validateSignup,
@@ -20,7 +20,7 @@ userRouter.post('/signup', [
   BaseController.render
 ]);
 
-userRouter.get('/activate', [
+ssrRouter.get('/activate', [
   SsrView.activation,
   Validator.validateActivationRequest,
   Validator.validateUserActivation,
@@ -29,7 +29,7 @@ userRouter.get('/activate', [
   Controller.handleFailedActivation,
 ]);
 
-userRouter.get('/renew-activation', [
+ssrRouter.get('/renew-activation', [
   SsrView.renewActivation,
   Validator.validateRenewActivationRequest,
   Validator.validateRenewUserActivation,
@@ -37,12 +37,12 @@ userRouter.get('/renew-activation', [
   BaseController.render
 ]);
 
-userRouter.get('/login', [
+ssrRouter.get('/login', [
   SsrView.login,
   BaseController.render
 ]);
 
-userRouter.post('/login', [
+ssrRouter.post('/login', [
   SsrView.login,
   Validator.validateLoginForm,
   Validator.validateLogin,
@@ -50,17 +50,17 @@ userRouter.post('/login', [
   BaseController.render
 ]);
 
-userRouter.get('/logout', [
+ssrRouter.get('/logout', [
   Controller.logUserOut
 ]);
 
-userRouter.get('/invitation', [
+ssrRouter.get('/invitation', [
   SsrView.invite,
   Controller.getInviation,
   BaseController.render
 ]);
 
-userRouter.post('/invitation', [
+ssrRouter.post('/invitation', [
   SsrView.invite,
   Validator.validateInvitationToken,
   Validator.validateAddingMember,
@@ -68,6 +68,6 @@ userRouter.post('/invitation', [
   BaseController.render
 ]);
 
-userRouter.use(BaseController.handleError);
+ssrRouter.use(BaseController.handleError);
 
-module.exports = userRouter;
+module.exports = ssrRouter;
