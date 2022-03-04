@@ -6,9 +6,7 @@ const Groups = React.lazy(() => import('./groups'));
 const Members = React.lazy(() => import('./members'));
 
 const Loading = () => (
-  <div className="container">
-    <h1>Loading...</h1>
-  </div>
+  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
 );
 
 const AppRoutes = () => (

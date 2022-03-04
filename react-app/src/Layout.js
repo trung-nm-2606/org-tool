@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, NavLink } from "react-router-dom";
-import { List, PeopleFill } from 'react-bootstrap-icons';
+import { List, PeopleFill, BoxArrowRight } from 'react-bootstrap-icons';
 import AppNav from './AppNav';
 
 // const Layout = ({ children }) => {
@@ -18,13 +18,21 @@ const Layout = ({ children }) => {
   return (
     <BrowserRouter>
       <div className="root-app d-flex">
-        <div className="app-side-bar d-flex flex-column align-items-center justify-content-start">
-          <div className="top-bar d-flex flex-column align-items-center justify-content-center">
-            <List role="button" size={24} />
+        <div className="app-side-bar d-flex flex-column align-items-center justify-content-between">
+          <div className="d-flex flex-column align-items-center justify-content-start">
+            <div className="top-bar d-flex flex-column align-items-center justify-content-center">
+              <List role="button" size={24} />
+            </div>
+            <div className="menu-icon text-black-50 active">
+              <PeopleFill role="button" size={24} />
+              <span className="label">Group Mgnt.</span>
+            </div>
           </div>
-          <div className="menu-icon text-black-50 active">
-            <PeopleFill role="button" size={24} />
-            <span className="label">Group Mgnt.</span>
+          <div className="d-flex flex-column align-items-center justify-content-end">
+            <a href="/logout" className="menu-icon text-black-50">
+              <BoxArrowRight role="button" size={16} />
+              <span className="label">Logout</span>
+            </a>
           </div>
         </div>
         <div className="function-side-bar">
