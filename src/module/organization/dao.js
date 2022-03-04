@@ -39,7 +39,7 @@ Dao.createOrganization = (name, desc, authenticatedUser) => {
           return;
         }
 
-        const query = 'insert into organizations(name1, description, created_by, updated_by, status) values(?,?,?,?,?)';
+        const query = 'insert into organizations(name, description, created_by, updated_by, status) values(?,?,?,?,?)';
         const { pk: userPk } = authenticatedUser;
         conn.query(query, [name, desc, userPk, userPk, 'active'], (e, result) => {
           if (e) {

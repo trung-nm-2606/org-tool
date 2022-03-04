@@ -4,7 +4,7 @@ const ForbiddenError = require('../../model/error/ForbiddenError');
 const UnprocessableEntityError = require('../../model/error/UnprocessableEntityError');
 const Dao = require('./dao');
 const UserDao = require('../user/dao');
-const session = require('../../../shared/session');
+const session = require('../../shared/session');
 
 const Validator = {};
 

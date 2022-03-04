@@ -1,4 +1,4 @@
-const session = require('../../../shared/session');
+const session = require('../../shared/session');
 const Service = require('../user/service');
 const Dao = require('./dao');
 

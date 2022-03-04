@@ -1,5 +1,5 @@
-const encryption = require('../../../shared/encryption');
-const session = require('../../../shared/session');
+const encryption = require('../../shared/encryption');
+const session = require('../../shared/session');
 const BadRequestError = require('../../model/error/BadRequestError');
 const Response = require('../../model/Response');
 const BaseController = require('../base/controller');

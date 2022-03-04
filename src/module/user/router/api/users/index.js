@@ -13,7 +13,7 @@ usersRouter.put('/self/update', [
   BaseController.render
 ]);
 
-usersRouter.get('/ping-auth', (req, res) => {
+usersRouter.get('/ping-auth', session.authenticateUser, (req, res) => {
   const { pk, name } = session.getAuthenticatedUser(req)
   res.json({ pk, name }); // Specially here only
 });
