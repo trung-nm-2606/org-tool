@@ -26,10 +26,10 @@ const Layout = ({ children }) => {
           </div>
           <div className="d-flex flex-column align-items-center justify-content-end">
             <div className="menu-icon text-black-50">
-              <NavLink to="/logout">
+              <a href="/logout">
                 <BoxArrowRight role="button" size={16} />
                 <span className="label">Logout</span>
-              </NavLink>
+              </a>
             </div>
           </div>
         </div>
