@@ -7,17 +7,24 @@ const Validation = require('../../../validator');
 
 const groupsRouter = express.Router();
 
-groupsRouter.post('/new', [
-  session.authenticateUser,
+groupsRouter.get('/get-all', [
   ApiView.api,
+  session.authenticateUser,
+  Controller.getOrganizations,
+  BaseController.render
+]);
+
+groupsRouter.post('/new', [
+  ApiView.api,
+  session.authenticateUser,
   Validation.validateNewOrganizationForm,
   Controller.createOrganization,
   BaseController.render
 ]);
 
 groupsRouter.put('/:organizationPk/update', [
-  session.authenticateUser,
   ApiView.api,
+  session.authenticateUser,
   Validation.validateUpdateOrganizationForm,
   Validation.validateOrganizationOwner,
   Controller.updateOrganization,
@@ -25,8 +32,8 @@ groupsRouter.put('/:organizationPk/update', [
 ]);
 
 groupsRouter.delete('/:organizationPk/delete', [
-  session.authenticateUser,
   ApiView.api,
+  session.authenticateUser,
   Validation.validateOrganizationOwner,
   Controller.deleteOrganization,
   BaseController.render

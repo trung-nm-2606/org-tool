@@ -4,6 +4,25 @@ const DaoError = require('../../model/error/DaoError');
 
 const Dao = {};
 
+Dao.findOrganizationsByUserPk = async (userPk) => {
+  const query = `select o.*, ou.role, tmp.members_count
+  from organizations_users as ou
+  left join organizations o on ou.organization_pk = o.pk
+  left join (
+    select ou_temp.organization_pk, count(ou_temp.user_pk) as members_count
+    from organizations_users as ou_temp
+    group by ou_temp.organization_pk
+  ) as tmp on tmp.organization_pk = o.pk
+  where ou.user_pk = ?`;
+
+  try {
+    const organizations = await db.query(query, [userPk]);
+    return organizations;
+  } catch (e) {
+    throw new DaoError(`Cannot get organizations by userPk(${userPk})`, e);
+  }
+};
+
 Dao.createOrganization = (name, desc, authenticatedUser) => {
   const errMsg = `Cannot create organization(name=${name},desc=${desc})`;
   return new Promise((resolve, reject) => {

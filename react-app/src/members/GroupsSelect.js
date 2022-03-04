@@ -9,7 +9,7 @@ const GroupsSelect = ({ initGroupPk, onChange }) => {
 
   const loadGroups = useCallback(() => {
     axios
-      .get('/api/groups/all')
+      .get('/api/groups/get-all')
       .then(({ data }) => {
         const { payload: groups } = data;
         setGroups(groups);

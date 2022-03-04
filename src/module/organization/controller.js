@@ -3,6 +3,21 @@ const Dao = require('./dao');
 
 const Controller = {};
 
+Controller.getOrganizations = async (req, res, next) => {
+  const authenticatedUser = session.getAuthenticatedUser(req);
+  const { view: { resp } } = res.locals;
+
+  try {
+    const organizations = await Dao.findOrganizationsByUserPk(authenticatedUser.pk);
+    resp.setPayload(organizations);
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
+};
+
 Controller.createOrganization = async (req, res, next) => {
   const { name, description } = req.body;
   const { view: { resp } } = res.locals;

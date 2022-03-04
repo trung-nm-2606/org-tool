@@ -14,7 +14,7 @@ const GroupsTable = ({ data = [] }) => {
     setMessage('');
     setGettingGroups(true);
     axios
-      .get('/api/groups/all')
+      .get('/api/groups/get-all')
       .then(({ data }) => {
         const { payload } = data;
         setGroups(payload);
