@@ -1,6 +1,6 @@
 const express = require('express');
 const session = require('../../../../../shared/session');
-const ApiView = require('../../../apiView');
+const ApiView = require('../../../../base/apiView');
 const BaseController = require('../../../../base/controller');
 const Controller = require('../../../controller');
 const UserController = require('../../../../user/controller');

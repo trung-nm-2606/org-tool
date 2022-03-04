@@ -1,10 +1,10 @@
 const View = require('../../model/View');
 
-const SsrView = {};
+const ApiView = {};
 
-SsrView.api = (req, res, next) => {
+ApiView.api = (req, res, next) => {
   res.locals.view = new View();
   next();
 };
 
-module.exports = SsrView;
+module.exports = ApiView;

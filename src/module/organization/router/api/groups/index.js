@@ -2,7 +2,7 @@ const express = require('express');
 const session = require('../../../../../../shared/session');
 const BaseController = require('../../../../base/controller');
 const Controller = require('../../../controller');
-const ApiView = require('../../../apiView');
+const ApiView = require('../../../../base/apiView');
 const Validation = require('../../../validator');
 
 const groupsRouter = express.Router();

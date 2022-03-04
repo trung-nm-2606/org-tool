@@ -209,4 +209,20 @@ Controller.inviteUser = async (req, res, next) => {
   next();
 };
 
+Controller.updateUser = async (req, res, next) => {
+  const { name, fullName } = req.body;
+  const { view: { resp } } = res.locals;
+  const { pk: userPk } = session.getAuthenticatedUser(req);
+
+  try {
+    await Dao.updateUser(userPk, { name, fullName });
+    resp.setPayload({ name, fullName });
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
+};
+
 module.exports = Controller;

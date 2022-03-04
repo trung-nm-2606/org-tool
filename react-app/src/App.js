@@ -22,12 +22,12 @@ const App = () => {
     });
     const id = setInterval(() => {
       axios
-        .get('/api/app/ping-auth')
+        .get('/api/users/ping-auth')
         .then(({ data }) => dispatch(appRedux.actions.setAuthUser(data)))
       ;
     }, 5 * 1000);
     axios
-      .get('/api/app/ping-auth')
+      .get('/api/users/ping-auth')
       .then(({ data }) => dispatch(appRedux.actions.setAuthUser(data)))
     ;
     return () => clearInterval(id);
