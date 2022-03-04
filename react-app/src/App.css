@@ -1,6 +1,5 @@
 body {
   background-color: #f5f5f5;
-  min-height: 100vh;
 }
 
 .root-app {
@@ -12,21 +11,14 @@ body {
 }
 
 .app-side-bar {
-  min-height: 100vh;
+  height: 100vh;
   width: 4rem;
   background-color: transparent;
   border-right: 1px solid rgba(0,0,0,.08);
+  transition: width 150ms;
 }
 
 .app-side-bar .menu-icon {
-  /* display: flex;
-  width: 100%;
-  min-height: 3rem;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem; */
   width: 100%;
 }
 
@@ -52,9 +44,10 @@ body {
 
 .function-side-bar {
   min-height: 100vh;
-  width: 16rem;
+  width: 13rem;
   background-color: transparent;
   padding-top: 0.5rem;
+  transition: width 150ms;
 }
 
 .function-side-bar ul, li {
@@ -91,8 +84,31 @@ body {
 }
 
 .working-space {
-  border-top-left-radius: 1rem;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
   height: calc(100vh - 0.5rem);
-  max-width: calc(100vw - 20rem);
+  width: calc(100vw - 4.1rem);
   font-size: .875rem;
+  transition: width 150ms;
+}
+
+@media (min-width: 576px) {
+}
+
+@media (min-width: 768px) {
+  .working-space {
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 0;
+    width: calc(100vw - 17rem);
+  }
+}
+
+@media (min-width: 992px) {
+  .function-side-bar {
+    width: 16rem;
+  }
+}
+
+@media (min-width: 1200px) {
+
 }

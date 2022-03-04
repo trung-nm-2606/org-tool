@@ -7,7 +7,7 @@ const Members = React.lazy(() => import('./members'));
 
 const GroupManagement = () => (
   <>
-    <div className="function-side-bar">
+    <div className="function-side-bar d-none d-md-block">
       <ul className="list-group list-group-flush">
         <li role="button" className="list-group-item text-black-50">
           <NavLink className="nav-link" to="/management/dashboard">Dashboard</NavLink>
@@ -20,7 +20,10 @@ const GroupManagement = () => (
         </li>
       </ul>
     </div>
-    <div className="container-fluid bg-white working-space mt-2 p-3">
+    {/* <div className="top-bar d-md-none d-lg-block d-flex flex-column align-items-center justify-content-center">
+      Hehe
+    </div> */}
+    <div className="bg-white working-space mt-5 mt-md-2 p-3">
       <div className="bg-white">
         <Routes>
           <Route path="/dashboard" element={<ManagementDashboard />} />

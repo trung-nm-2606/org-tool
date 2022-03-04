@@ -34,11 +34,11 @@ const App = () => {
     return () => clearInterval(id);
   }, [/* componentDidMount */]);
 
-  if (!authUser) {
-    return (
-      <span className="spinner-border spinner-border-sm m-3" role="status" aria-hidden="true"></span>
-    );
-  }
+  // if (!authUser) {
+  //   return (
+  //     <span className="spinner-border spinner-border-sm m-3" role="status" aria-hidden="true"></span>
+  //   );
+  // }
 
   return (
     <Layout>
