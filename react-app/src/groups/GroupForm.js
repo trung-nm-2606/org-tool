@@ -39,7 +39,7 @@ const GroupForm = ({ group }) => {
   return (
     <>
       <div className="d-flex align-items-center justify-content-between">
-        <h1>{label}</h1>
+        <h3>{label}</h3>
       </div>
       <form onSubmit={createUpdateGroup}>
         {message && (

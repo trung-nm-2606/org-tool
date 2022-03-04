@@ -8,9 +8,9 @@ const Members = () => {
   const [groupPk, setGroupPk] = useState(state);
 
   return (
-    <div className="container">
+    <div className="">
       <div className="d-flex align-items-center justify-content-start">
-        <h1 className="me-2">Members of </h1>
+        <h3 className="me-2 mb-0">Members of </h3>
         <GroupsSelect initGroupPk={state} onChange={setGroupPk} />
       </div>
       <MemberList groupPk={groupPk}/>

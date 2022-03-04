@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import './App.css';
 import AppRoutes from "./AppRoutes";
 import Layout from './Layout';
 import appRedux from './redux/app';
@@ -33,13 +34,13 @@ const App = () => {
     return () => clearInterval(id);
   }, [/* componentDidMount */]);
 
-  if (!authUser) {
-    return (
-      <div className="container">
-        <h1>Loading...</h1>
-      </div>
-    );
-  }
+  // if (!authUser) {
+  //   return (
+  //     <div className="container">
+  //       <h1>Loading...</h1>
+  //     </div>
+  //   );
+  // }
 
   return (
     <Layout>

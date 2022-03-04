@@ -6,7 +6,7 @@ const NewGroupForm = React.lazy(() => import('./NewGroupForm'));
 const UpdateGroupForm = React.lazy(() => import('./UpdateGroupForm'));
 
 const Groups = () => (
-  <div className="container">
+  <div className="">
     <Routes>
       <Route exact path="new" element={<NewGroupForm />}/>
       <Route exact path="update" element={<UpdateGroupForm />}/>
