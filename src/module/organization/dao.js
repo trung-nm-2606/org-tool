@@ -84,6 +84,17 @@ Dao.updateOrganization = async (organizationPk, userPk, updateInfo) => {
   return true;
 };
 
+Dao.deleteOrganization = async (organizationPk) => {
+  const query = 'delete from organizations where pk = ?';
+  try {
+    await db.query(query, [organizationPk]);
+  } catch (e) {
+    throw new DaoError(`Cannot delete organization(pk=${organizationPk})`, e);
+  }
+
+  return true;
+};
+
 Dao.findOrganizationByPk = async (pk) => {
   const query = `select * from organizations where pk = ?`;
   let organizations = [];

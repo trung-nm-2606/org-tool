@@ -24,4 +24,12 @@ groupsRouter.put('/:organizationPk/update', [
   BaseController.render
 ]);
 
+groupsRouter.delete('/:organizationPk/delete', [
+  session.authenticateUser,
+  ApiView.api,
+  Validation.validateOrganizationOwner,
+  Controller.deleteOrganization,
+  BaseController.render
+]);
+
 module.exports = groupsRouter;

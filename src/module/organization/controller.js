@@ -36,4 +36,18 @@ Controller.updateOrganization = async (req, res, next) => {
   next();
 };
 
+Controller.deleteOrganization = async (req, res, next) => {
+  const { organizationPk } = req.params;
+  const { view: { resp } } = res.locals;
+
+  try {
+    await Dao.deleteOrganization(organizationPk);
+    resp.setPayload({ pk: organizationPk });
+    res.json(resp);
+  } catch (e) {
+    next(e);
+    return;
+  }
+};
+
 module.exports = Controller;

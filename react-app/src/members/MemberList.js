@@ -75,15 +75,15 @@ const MemberList = ({ groupPk }) => {
           <tbody>
             {members.map(({ pk, name, full_name, email, status, role }, index) => (
               <tr key={`${pk}-${name}-${index}`}>
-                <th scope="row">{index + 1}</th>
-                <td className={authUser?.pk === pk ? 'text-primary' : ''}>
+                <th className="align-middle" scope="row">{index + 1}</th>
+                <td className={authUser?.pk === pk ? 'text-primary align-top' : 'align-top'}>
                   <span className="d-block">{`${name}${authUser?.pk === pk ? ' (you)' : ''}`}</span>
                   <span className="d-block text-muted">{full_name}</span>
                 </td>
-                <td>{email}</td>
-                <td>{status}</td>
-                <td>{role}</td>
-                <td>
+                <td className="align-middle">{email}</td>
+                <td className="align-middle">{status}</td>
+                <td className="align-middle">{role}</td>
+                <td className="align-middle">
                   {role !== 'owner' && (
                     <RemoveMemberBtn
                       groupPk={groupPk}

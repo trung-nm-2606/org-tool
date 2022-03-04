@@ -64,18 +64,18 @@ const GroupsTable = ({ data = [] }) => {
           <tbody>
             {groups.map(({ pk, name, description, status, role, members_count }, index) => (
               <tr key={`${pk}-${name}-${index}`}>
-                <th scope="row">{index + 1}</th>
-                <td>{name}</td>
-                <td>{description}</td>
-                <td>{status}</td>
-                <td>{role}</td>
-                <td>
+                <th className="align-middle" scope="row">{index + 1}</th>
+                <td className="align-middle">{name}</td>
+                <td className="align-middle">{description}</td>
+                <td className="align-middle">{status}</td>
+                <td className="align-middle">{role}</td>
+                <td className="align-middle">
                   <button type="button" class="btn btn-link" onClick={() => viewMembers(pk)}>
                     {`${members_count} members`}
                   </button>
                 </td>
-                <td>
-                  <PencilSquare className="me-2 text-primary" onClick={() => updateGroup({ pk, name, description })} />
+                <td className="align-middle">
+                  <PencilSquare role="button" className="me-2 text-primary" onClick={() => updateGroup({ pk, name, description })} />
                   <DeleteGroupBtn
                     groupPk={pk}
                     groupName={name}

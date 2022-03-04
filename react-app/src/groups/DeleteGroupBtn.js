@@ -13,7 +13,7 @@ const DeleteGroupBtn = ({ groupPk, groupName, onError, onSuccess }) => {
 
   return (
     <>
-      <TrashFill className="text-danger" data-bs-toggle="modal" data-bs-target={`#delete-group-modal-${groupPk}`} />
+      <TrashFill role="button" className="text-danger" data-bs-toggle="modal" data-bs-target={`#delete-group-modal-${groupPk}`} />
       <div class="modal fade" id={`delete-group-modal-${groupPk}`} tabindex="-1" aria-labelledby="delete-group-modal" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
