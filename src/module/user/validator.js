@@ -5,6 +5,7 @@ const UnprocessibleEntityError = require("../../model/error/UnprocessableEntityE
 const encryption = require("../../shared/encryption");
 const Dao = require('./dao');
 const OrganizationDao = require('../organization/dao');
+const Service = require("./service");
 
 const Validator = {};
 
@@ -108,7 +109,7 @@ Validator.validateUserActivation = async (req, res, next) => {
       return;
     }
 
-    const { email: uEmail, activationCode } = encryption.verifyToken(token, userActivation.activation_code);
+    const { email: uEmail, activationCode } = Service.parseUserActivationToken(token, userActivation.activation_code);
 
     if (userActivation.activation_code !== activationCode) {
       err = new UnprocessibleEntityError(`User activation with email(${email}) is expired`);
@@ -187,7 +188,7 @@ Validator.validateInvitationToken = async (req, res, next) => {
   let user, invitationData, organization;
 
   try {
-    invitationData = encryption.verifyToken(token, 'ac7iva7i0nC0d3');
+    invitationData = Service.parseUserInvitationToken(token);
 
     const {
       organizationOwnerPk,

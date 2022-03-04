@@ -26,6 +26,7 @@ membersRouter.post('/:organizationPk/invite', [
   BaseController.render
 ]);
 
+
 membersRouter.delete('/:organizationPk/:memberPk/remove', [
   ApiView.api,
   session.authenticateUser,
@@ -33,6 +34,15 @@ membersRouter.delete('/:organizationPk/:memberPk/remove', [
   Validator.validateOrganizationOwner,
   Validator.validateRemovingMember,
   Controller.removeMember,
+  BaseController.render
+]);
+
+membersRouter.get('/:organizationPk/get-invitation-link', [
+  ApiView.api,
+  session.authenticateUser,
+  Validator.validateOrganization,
+  Validator.validateOrganizationOwner,
+  Controller.generateInvitationLink,
   BaseController.render
 ]);
 

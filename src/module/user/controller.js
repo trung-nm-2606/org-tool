@@ -155,7 +155,7 @@ Controller.getInviation = async (req, res, next) => {
     return;
   }
 
-  const { organizationPk } = encryption.verifyToken(token, 'ac7iva7i0nC0d3');
+  const { organizationPk } = Service.parseUserInvitationToken(token);
   let organization = {};
   try {
     organization = await OrganizationDao.findOrganizationByPk(organizationPk);

@@ -1,4 +1,5 @@
 const session = require('../../../shared/session');
+const Service = require('../user/service');
 const Dao = require('./dao');
 
 const Controller = {};
@@ -87,6 +88,26 @@ Controller.removeMember = async (req, res, next) => {
   try {
     await Dao.removeUserFromOrganization(organizationPk, memberPk);
     resp.setOperMessage(`Member removed from group successullfy`);
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
+};
+
+Controller.generateInvitationLink = (req, res, next) => {
+  const { organizationPk } = req.params;
+  const { view: { resp } } = res.locals;
+  const authenticatedUser = session.getAuthenticatedUser(req);
+
+  try {
+    const token = Service.generateUserInvitationToken(
+      authenticatedUser.pk,
+      authenticatedUser.email,
+      organizationPk
+    );
+    resp.setPayload(`http://localhost:8080/users/invitation?token=${token}`);
   } catch (e) {
     next(e);
     return;
