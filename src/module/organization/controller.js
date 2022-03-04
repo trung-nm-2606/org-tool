@@ -65,4 +65,19 @@ Controller.deleteOrganization = async (req, res, next) => {
   }
 };
 
+Controller.getMembers = async (req, res, next) => {
+  const { organizationPk } = req.params;
+  const { view: { resp } } = res.locals;
+
+  try {
+    const members = await Dao.findMembersByOrganizationPk(organizationPk);
+    resp.setPayload(members);
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
+};
+
 module.exports = Controller;

@@ -19,7 +19,7 @@ const MemberList = ({ groupPk }) => {
     setMessage('');
     setGettingMembers(true);
     axios
-      .get(`/api/members/${groupPk}/all`)
+      .get(`/api/members/${groupPk}/get-all`)
       .then(({ data }) => {
         const { payload: members } = data;
         setMembers(members);
