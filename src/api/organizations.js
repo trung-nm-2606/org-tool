@@ -132,7 +132,7 @@ const deleteGroup = async (req, res) => {
 
 const api = express.Router();
 // api.post('/new', session.authenticateUser, organizationValidator, postNewGroup);
-api.put('/:organizationPk/update', session.authenticateUser, organizationValidator, putUpdateGroup);
+// api.put('/:organizationPk/update', session.authenticateUser, organizationValidator, putUpdateGroup);
 api.delete('/:organizationPk/delete', session.authenticateUser, organizationOwnerValidator, deleteGroup);
 api.get('/all', session.authenticateUser, getOrganizations);
 

@@ -2,7 +2,7 @@ const View = require('../../model/View');
 
 const SsrView = {};
 
-SsrView.createOrganization = (req, res, next) => {
+SsrView.api = (req, res, next) => {
   res.locals.view = new View();
   next();
 };

@@ -219,7 +219,7 @@ Validator.validateInvitationToken = async (req, res, next) => {
     if (!user) {
       const err = new NotFoundError(`Invalid invitation token. User with email(${email}) is not found`);
       err.operCode = 'user.notfound';
-      next();
+      next(err);
       return;
     }
   } catch (e) {

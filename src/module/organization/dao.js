@@ -1,4 +1,5 @@
 const db = require('../../shared/db');
+const dateUtils = require('../../shared/date_utils');
 const DaoError = require('../../model/error/DaoError');
 
 const Dao = {};
@@ -58,6 +59,29 @@ Dao.createOrganization = (name, desc, authenticatedUser) => {
       });
     });
   });
+};
+
+Dao.updateOrganization = async (organizationPk, userPk, updateInfo) => {
+  const fields = [];
+  const args = [];
+  for (let key in updateInfo) {
+    const field = key;
+    fields.push(`${field}=COALESCE(?, ${field})`);
+    args.push(updateInfo[key]);
+  }
+  const updateFields = fields.join(',')
+  const query = `update organizations set ${updateFields}, updated_at = ?, updated_by = ? where pk = ?`;
+  args.push(dateUtils.getMariaDbCurrentTimestamp());
+  args.push(userPk);
+  args.push(organizationPk);
+
+  try {
+    await db.query(query, args);
+  } catch (e) {
+    throw new DaoError(`Cannot update organization(pk=${organizationPk})`, e);
+  }
+
+  return true;
 };
 
 Dao.findOrganizationByPk = async (pk) => {
