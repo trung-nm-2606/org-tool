@@ -8,6 +8,9 @@
     <form action="/users/invitation" method="post" style="width: 320px;" >
       <%- include('./partials/alert_error'); %>
       <%- include('./partials/alert_success'); %>
+      <% if (locals.oper && oper.code === 'user.notfound') {%>
+        <p>You might want to <a href="/signup">sign up</a></p>
+      <%}%>
       <%if (locals.oper && oper.status === 'success') {%>
       <% if (locals.payload) {%>
         <% if (locals.payload.groupName) {%>
