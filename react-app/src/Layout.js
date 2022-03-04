@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, NavLink } from "react-router-dom";
-import { List, PeopleFill, BoxArrowRight, Bank } from 'react-bootstrap-icons';
+import { List, Command, BoxArrowRight, Bank } from 'react-bootstrap-icons';
 
 const Layout = ({ children }) => {
   return (
@@ -13,7 +13,7 @@ const Layout = ({ children }) => {
             </div>
             <div className="menu-icon text-black-50">
               <NavLink to="/management">
-                <PeopleFill size={24} />
+                <Command size={24} />
                 <span className="label">Group Mgnt.</span>
               </NavLink>
             </div>
