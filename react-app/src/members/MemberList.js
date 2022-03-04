@@ -9,6 +9,7 @@ const MemberList = ({ groupPk }) => {
   const [message, setMessage] = useState('');
   const [members, setMembers] = useState([]);
   const [gettingMembers, setGettingMembers] = useState(true);
+  const [isOwner, setIsOwner] = useState(false);
 
   const reloadMembers = useCallback((groupPk) => {
     if (!groupPk || groupPk <= 0) {
@@ -20,8 +21,10 @@ const MemberList = ({ groupPk }) => {
     axios
       .get(`/api/members/${groupPk}/all`)
       .then(({ data }) => {
-        const { payload } = data;
-        setMembers(payload);
+        const { payload: members } = data;
+        setMembers(members);
+        const owner = members.find(({ user_pk: memberPk, role }) => memberPk === authUser?.pk && role === 'owner')
+        setIsOwner(!!owner);
       })
       .catch((resp) => {
         const { data = {} } = resp;
@@ -53,9 +56,11 @@ const MemberList = ({ groupPk }) => {
         </div>
       )}
       <div className="mb-2">{`Number of members: ${members?.length} members`}</div>
-      <div>
-        <InviteMemberBtn groupPk={groupPk} onSuccess={() => reloadMembers(groupPk)} />
-      </div>
+      {isOwner && (
+        <div>
+          <InviteMemberBtn groupPk={groupPk} onSuccess={() => reloadMembers(groupPk)} />
+        </div>
+      )}
       <div className="table-responsive">
         <table class="table table-striped table-hover fw-light">
           <thead>
