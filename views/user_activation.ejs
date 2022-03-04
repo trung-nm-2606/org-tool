@@ -25,6 +25,10 @@
     <p><a href id="renew-user-activation">Request activation code</a></p>
     <%}%>
 
+    <% if (oper && oper.status === 'failed' && oper.code === 'UserActivationCode.Old') {%>
+    <p>This user activation token is expired. It does not carry the correct status of your account</p>
+    <%}%>
+
 	  <%- include('./partials/footer'); %>
     <script src="/public/javascripts/user_activation.js"></script>
   </body>
