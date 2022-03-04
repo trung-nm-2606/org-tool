@@ -113,4 +113,21 @@ Validator.validateInvitation = async (req, res, next) => {
   next();
 };
 
+Validator.validateRemovingMember = (req, res, next) => {
+  const { memberPk } = req.params;
+  const { organization } = res.locals;
+
+  if (!memberPk || +memberPk <= 0) {
+    next(new BadRequestError('Target member is missing'));
+    return;
+  }
+
+  if (+organization.created_by === +memberPk) {
+    next(new UnprocessableEntityError('You are the owner of the group to not be removed'));
+    return;
+  }
+
+  next();
+};
+
 module.exports = Validator;

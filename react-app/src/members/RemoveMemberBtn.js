@@ -6,6 +6,7 @@ const RemoveMemberBtn = ({
   groupPk,
   memberPk,
   memberName,
+  isOwner,
   onError,
   onSuccess
 }) => {
@@ -36,7 +37,11 @@ const RemoveMemberBtn = ({
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <p>Are you sure you want to remove member <strong>{memberName}</strong> from the group?</p>
+              {isOwner ? (
+                <p>Are you sure you want to remove member <strong>{memberName}</strong> from the group?</p>
+              ) : (
+                <p>Are you sure you want to leave the group?</p>
+              )}
             </div>
             <div class="modal-footer">
               <button type="button" class="btn" data-bs-dismiss="modal">Cancel</button>
@@ -46,7 +51,7 @@ const RemoveMemberBtn = ({
                 data-bs-dismiss="modal"
                 onClick={removeMember}
               >
-                Remove
+                {isOwner ? 'Remove Member' : 'Leave Group'}
               </button>
             </div>
           </div>

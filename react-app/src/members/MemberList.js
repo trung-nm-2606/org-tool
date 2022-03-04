@@ -91,6 +91,7 @@ const MemberList = ({ groupPk }) => {
                       memberName={`${name} (${full_name})`}
                       onError={message => setMessage(message)}
                       onSuccess={() => reloadMembers(groupPk)}
+                      isOwner={isOwner}
                     />
                   )}
                 </td>

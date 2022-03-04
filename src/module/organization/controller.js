@@ -80,4 +80,19 @@ Controller.getMembers = async (req, res, next) => {
   next();
 };
 
+Controller.removeMember = async (req, res, next) => {
+  const { view: { resp } } = res.locals;
+  const { organizationPk, memberPk } = req.params;
+
+  try {
+    await Dao.removeUserFromOrganization(organizationPk, memberPk);
+    resp.setOperMessage(`Member removed from group successullfy`);
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
+};
+
 module.exports = Controller;

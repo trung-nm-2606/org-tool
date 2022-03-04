@@ -26,4 +26,14 @@ membersRouter.post('/:organizationPk/invite', [
   BaseController.render
 ]);
 
+membersRouter.delete('/:organizationPk/:memberPk/remove', [
+  ApiView.api,
+  session.authenticateUser,
+  Validator.validateOrganization,
+  Validator.validateOrganizationOwner,
+  Validator.validateRemovingMember,
+  Controller.removeMember,
+  BaseController.render
+]);
+
 module.exports = membersRouter;

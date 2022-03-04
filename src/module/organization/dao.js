@@ -130,7 +130,7 @@ Dao.findOrganizationByPk = async (pk) => {
 Dao.findMembersByOrganizationPk = async (organizationPk, memberPk = '') => {
   const query = `select ou.*, u.* from organizations_users as ou
   left join users u on ou.user_pk = u.pk
-  where ou.organization_pk = ? and u.status = 'active'
+  where ou.organization_pk = ?
   ${memberPk ? ' and ou.user_pk = ?' : ''}`;
   const args = [organizationPk];
   if (memberPk) args.push(memberPk);
@@ -163,6 +163,18 @@ Dao.addUserToOrganization = async (organizationPk, userPk) => {
     await db.query(query, [organizationPk, userPk, 'member']);
   } catch (e) {
     throw new DaoError(`Cannot add member(pk=${userPk}) to organization(pk=${organizationPk})`, e);
+  }
+
+  return true;
+};
+
+Dao.removeUserFromOrganization = async (organizationPk, userPk) => {
+  const query = 'delete from organizations_users where organization_pk = ? and user_pk = ?';
+
+  try {
+    await db.query(query, [organizationPk, userPk]);
+  } catch (e) {
+    throw new DaoError(`Cannot remove member(pk=${userPk}) from organization(pk=${organizationPk})`, e);
   }
 
   return true;
