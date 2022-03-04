@@ -1,7 +1,7 @@
 const Response = require('./Response');
 
 class View {
-  constructor(isSsr, template) {
+  constructor(isSsr = false, template = '') {
     this.isSsr = isSsr;
     this.template = template;
     this.httpCode = false;

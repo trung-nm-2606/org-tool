@@ -8,6 +8,8 @@ const logger = require('morgan');
 const app = express();
 const api = require('./src/api');
 const UserRouter = require('./src/module/user/router');
+const OrganizationRouter = require('./src/module/organization/router');
+const BaseController = require('./src/module/base/controller');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -34,6 +36,8 @@ app.use(express.static('react-app/build'));
 
 app.use('/api', api);
 app.use(UserRouter);
+app.use(OrganizationRouter);
+app.use(BaseController.handleError);
 // app.use('/signup', (req, res) => res.redirect('/users/signup'));
 // app.use('/login', (req, res) => res.redirect('/users/login'));
 // app.use('/logout', (req, res) => res.redirect('/users/logout'));

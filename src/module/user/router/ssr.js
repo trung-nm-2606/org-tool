@@ -68,6 +68,4 @@ ssrRouter.post('/users/invitation', [
   BaseController.render
 ]);
 
-ssrRouter.use(BaseController.handleError);
-
 module.exports = ssrRouter;
