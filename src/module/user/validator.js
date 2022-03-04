@@ -218,7 +218,7 @@ Validator.validateInvitationToken = async (req, res, next) => {
     user = await Dao.findUserByEmail(email);
     if (!user) {
       const err = new NotFoundError(`Invalid invitation token. User with email(${email}) is not found`);
-      err.operCode = 'user.notfound';
+      err.operCode = 'user.notfound'; // This is to lead adding member to a registration on UI
       next(err);
       return;
     }
