@@ -20,7 +20,7 @@ ssrRouter.post('/signup', [
   BaseController.render
 ]);
 
-ssrRouter.get('/activate', [
+ssrRouter.get('/users/activate', [
   SsrView.activation,
   Validator.validateActivationRequest,
   Validator.validateUserActivation,
@@ -29,7 +29,7 @@ ssrRouter.get('/activate', [
   Controller.handleFailedActivation,
 ]);
 
-ssrRouter.get('/renew-activation', [
+ssrRouter.get('/users/renew-activation', [
   SsrView.renewActivation,
   Validator.validateRenewActivationRequest,
   Validator.validateRenewUserActivation,
@@ -54,13 +54,13 @@ ssrRouter.get('/logout', [
   Controller.logUserOut
 ]);
 
-ssrRouter.get('/invitation', [
+ssrRouter.get('/users/invitation', [
   SsrView.invite,
   Controller.getInviation,
   BaseController.render
 ]);
 
-ssrRouter.post('/invitation', [
+ssrRouter.post('/users/invitation', [
   SsrView.invite,
   Validator.validateInvitationToken,
   Validator.validateAddingMember,

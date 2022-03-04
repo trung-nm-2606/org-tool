@@ -14,7 +14,7 @@
     <%}%>
 
     <% if (oper && oper.status === 'success' && oper.code === 'UserActivationCode.Processed') {%>
-    <p>Try <a href="/users/login">Login</a></p>
+    <p>Try <a href="/login">Login</a></p>
     <%}%>
 
     <% if (oper && oper.status === 'failed' && oper.code === 'UserActivationCode.Mismatched') {%>

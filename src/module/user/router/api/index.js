@@ -1,7 +1,8 @@
 const express = require('express');
+const usersRouter = require('./users');
 
 const apiRouter = express.Router();
 
-apiRouter.get('/get-all', (req, res) => res.json({ message: 'Welcome' }));
+apiRouter.use('/users', usersRouter);
 
 module.exports = apiRouter;

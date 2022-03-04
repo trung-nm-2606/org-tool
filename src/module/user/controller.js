@@ -141,7 +141,7 @@ Controller.logUserIn = async (req, res, next) => {
 
 Controller.logUserOut = (req, res) => {
   session.removeAuthenticatedUser(req);
-  res.redirect('/users/login'); // Specially here only
+  res.redirect('/login'); // Specially here only
 };
 
 Controller.getInviation = async (req, res, next) => {

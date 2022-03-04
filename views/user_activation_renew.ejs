@@ -9,11 +9,11 @@
     <%- include('./partials/alert_success'); %>
 
     <% if (oper && oper.status === 'success' && oper.code === 'UserActivationCode.Renew.Processed') {%>
-      <p>Try <a href="/users/login">Login</a></p>
+      <p>Try <a href="/login">Login</a></p>
       <%}%>
 
     <% if (locals.oper && oper.status === 'failed' && oper.code === 'UserActivationCode.Renew.UserNotFound') {%>
-    <p>Try <a href="/users/signup">Sign up</a></p>
+    <p>Try <a href="/signup">Sign up</a></p>
     <%}%>
 
     <% if (locals.oper && oper.status === 'failed' && oper.code !== 'UserActivationCode.Renew.UserNotFound') {%>

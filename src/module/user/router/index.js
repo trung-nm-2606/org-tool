@@ -4,7 +4,7 @@ const ssrRouter = require('./ssr');
 
 const userRouter = express.Router();
 
-userRouter.use('/users', ssrRouter);
-userRouter.use('/api/users', apiRouter);
+userRouter.use('/', ssrRouter);
+userRouter.use('/api', apiRouter);
 
 module.exports = userRouter;
