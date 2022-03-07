@@ -8,7 +8,7 @@ Dao.findInitialTransactionByOrganizationPk = async (organizationPk) => {
   const query = 'select * from organization_transactions where organization_pk = ? and type = ?';
 
   try {
-    const [organizations] = await db.execute(query, [organizationPk, 'initial']);
+    const [organizations] = await db.execute(query, [organizationPk, 'init']);
     return organizations[0];
   } catch (e) {
     throw new DaoError(`Cannot find initial transcation of group(${organizationPk})`, e);
@@ -40,6 +40,17 @@ Dao.createTransaction = async ({
   }
 
   return true;
+};
+
+Dao.getLatestTransactionByOrganization = async (organizationPk) => {
+  const query = 'select * from organization_transactions order by created_at desc limit 1';
+
+  try {
+    const [transactions] = await db.execute(query, [organizationPk]);
+    return transactions[0];
+  } catch (e) {
+    throw new DaoError(`Cannot get latest transaction of group(${organizationPk})`, e);
+  }
 };
 
 module.exports = Dao;

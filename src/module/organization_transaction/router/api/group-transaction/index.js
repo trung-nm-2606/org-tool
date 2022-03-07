@@ -17,4 +17,12 @@ groupTransactionRouter.post('/:organizationPk/init', [
   BaseController.render
 ]);
 
+groupTransactionRouter.get('/:organizationPk/get-current-balance', [
+  ApiView.api,
+  session.authenticateUser,
+  OrganizationValidator.validateOrganizationOwner,
+  Controller.getCurrentBalance,
+  BaseController.render
+]);
+
 module.exports = groupTransactionRouter;

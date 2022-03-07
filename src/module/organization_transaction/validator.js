@@ -9,7 +9,7 @@ Validator.validateExistingInitialTransaction = async (req, res, next) => {
   try {
     const organization = await Dao.findInitialTransactionByOrganizationPk(organizationPk);
     if (organization) {
-      next(new UnprocessableEntityError(`Cannot create new initial transaction for group(${organizationPk})`));
+      next(new UnprocessableEntityError(`Initial transaction for group(${organizationPk}) is already existed`));
       return;
     }
   } catch (e) {

@@ -1,3 +1,4 @@
+const UnprocessableEntityError = require('../../model/error/UnprocessableEntityError');
 const session = require('../../shared/session');
 const Dao = require('./dao');
 
@@ -20,6 +21,29 @@ Controller.initGroupTransaction = async (req, res, next) => {
   try {
     await Dao.createTransaction(transaction);
     resp.setOperMessage(`Group transaction is initialized successfully`);
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
+};
+
+Controller.getCurrentBalance = async (req, res, next) => {
+  const { organizationPk } = req.params;
+  const { view: { resp } } = res.locals;
+
+  try {
+    const latestTransaction = await Dao.getLatestTransactionByOrganization(organizationPk);
+    if (!latestTransaction) {
+      next(new UnprocessableEntityError(`Cannot get current balance of group(${organizationPk})`));
+      return;
+    }
+
+    resp.setOperMessage({
+      pk: organizationPk,
+      current_balance: latestTransaction.value_before + latestTransaction.changes
+    });
   } catch (e) {
     next(e);
     return;
