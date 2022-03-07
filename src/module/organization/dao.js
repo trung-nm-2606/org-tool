@@ -49,59 +49,6 @@ Dao.createOrganization = async (name, desc, authenticatedUser) => {
   }
 
   return true;
-  // return new Promise((resolve, reject) => {
-  //   db.getConnection((e, conn) => {
-  //     if (e) {
-  //       return reject(new DaoError(errMsg, e));
-  //     }
-  //     conn.beginTransaction((e) => {
-  //       if (e) {
-  //         conn.rollback(() => {
-  //           conn.release();
-  //           return reject(new DaoError(errMsg, e));
-  //         });
-  //         return;
-  //       }
-
-  //       const query = 'insert into organizations(name, description, created_by, updated_by, status) values(?,?,?,?,?)';
-  //       const { pk: userPk } = authenticatedUser;
-  //       conn.query(query, [name, desc, userPk, userPk, 'active'], (e, result) => {
-  //         if (e) {
-  //           conn.rollback(() => {
-  //             conn.release();
-  //             return reject(new DaoError(errMsg, e));
-  //           });
-  //           return;
-  //         }
-
-  //         const organizationPk = result.insertId;
-  //         const query = 'insert into organizations_users(organization_pk, user_pk, role) values(?,?,?)';
-  //         conn.query(query, [organizationPk, userPk, 'owner'], (e) => {
-  //           if (e) {
-  //             conn.rollback(() => {
-  //               conn.release();
-  //               return reject(new DaoError(errMsg, e));
-  //             });
-  //             return;
-  //           }
-
-  //           conn.commit((e) => {
-  //             if (e) {
-  //               conn.rollback(() => {
-  //                 conn.release();
-  //                 return reject(new DaoError(errMsg, e));
-  //               });
-  //               return;
-  //             }
-
-  //             conn.release();
-  //             resolve(true);
-  //           });
-  //         });
-  //       });
-  //     });
-  //   });
-  // });
 };
 
 Dao.updateOrganization = async (organizationPk, userPk, updateInfo) => {
