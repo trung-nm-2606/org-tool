@@ -123,7 +123,25 @@ Validator.validateRemovingMember = (req, res, next) => {
   }
 
   if (+organization.created_by === +memberPk) {
-    next(new UnprocessableEntityError('You are the owner of the group to not be removed'));
+    next(new ForbiddenError('You are the owner of the group to not be removed'));
+    return;
+  }
+
+  next();
+};
+
+Validator.validateLeavingMember = async (req, res, next) => {
+  const { organizationPk } = req.params;
+  const authenticatedUser = session.getAuthenticatedUser(req);
+
+  try {
+    const [organization] = await Dao.findMembersByOrganizationPk(organizationPk, authenticatedUser.pk);
+    if (!organization || organization.role !== 'member') {
+      next(new ForbiddenError('You are not a member of the group to leave'));
+      return;
+    }
+  } catch (e) {
+    next(e);
     return;
   }
 

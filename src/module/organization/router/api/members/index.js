@@ -37,6 +37,15 @@ membersRouter.delete('/:organizationPk/:memberPk/remove', [
   BaseController.render
 ]);
 
+membersRouter.put('/:organizationPk/leave', [
+  ApiView.api,
+  session.authenticateUser,
+  Validator.validateOrganization,
+  Validator.validateLeavingMember,
+  Controller.leaveGroup,
+  BaseController.render
+]);
+
 membersRouter.get('/:organizationPk/get-invitation-link', [
   ApiView.api,
   session.authenticateUser,

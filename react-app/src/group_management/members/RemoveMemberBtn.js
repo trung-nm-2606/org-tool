@@ -11,8 +11,9 @@ const RemoveMemberBtn = ({
   onSuccess
 }) => {
   const removeMember = () => {
-    axios
-      .delete(`/api/members/${groupPk}/${memberPk}/remove`)
+    const apiUrl = isOwner ? `/api/members/${groupPk}/${memberPk}/remove` : `/api/members/${groupPk}/leave`;
+    const apiPromise = isOwner ? axios.delete(apiUrl) : axios.put(apiUrl);
+    apiPromise
       .then(onSuccess)
       .catch(({ data = {} }) => {
         const { oper } = data;

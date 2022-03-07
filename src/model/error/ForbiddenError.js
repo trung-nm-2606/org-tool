@@ -2,7 +2,7 @@ const BaseError = require('./BaseError');
 
 class ForbiddenError extends BaseError {
   constructor(message, originalError) {
-    super(message, true, 404, originalError);
+    super(message, true, 403, originalError);
     this.name = 'ForbiddenError';
   }
 }

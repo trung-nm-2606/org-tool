@@ -96,6 +96,22 @@ Controller.removeMember = async (req, res, next) => {
   next();
 };
 
+Controller.leaveGroup = async (req, res, next) => {
+  const { view: { resp } } = res.locals;
+  const { organizationPk } = req.params;
+  const authenticatedUser = session.getAuthenticatedUser(req);
+
+  try {
+    await Dao.removeUserFromOrganization(organizationPk, authenticatedUser.pk);
+    resp.setOperMessage(`Member removed from group successullfy`);
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
+};
+
 Controller.generateInvitationLink = (req, res, next) => {
   const { organizationPk } = req.params;
   const { view: { resp } } = res.locals;
