@@ -9,55 +9,42 @@ const Dao = {};
 
 Dao.findUserByPk = async (pk) => {
   const query = 'select * from users where pk = ?';
-  let users = [];
-
   try {
-    users = await db.query(query, [pk]);
+    const [users] = await db.execute(query, [pk]);
+    return users[0];
   } catch (e) {
     throw new NotFoundError(`User(pk=${pk}) is not found`, e);
   }
-
-  return users[0];
 };
 
 Dao.findUserByEmail = async (email) => {
   const query = 'select * from users where email = ?';
-  let users = [];
-
   try {
-    users = await db.query(query, [email]);
+    const [users] = await db.execute(query, [email]);
+    return users[0];
   } catch (e) {
     throw new NotFoundError(`User(email=${email}) is not found`, e);
   }
-
-  return users[0];
 };
 
 Dao.createUserActivation = async (email, activationCode) => {
   const query = 'insert into user_activations(email, activation_code) values(?,?)';
-  let result = { insertId: 0 };
-
   try {
-    result = await db.query(query, [email, activationCode]);
+    const [result] = await db.execute(query, [email, activationCode]);
+    return result.insertId > 0;
   } catch (e) {
     throw new DaoError(`Cannot create user activation for email(${email})`, e);
   }
-
-  return result.insertId > 0;
 };
 
 Dao.createUser = async (email, encryptedPassword) => {
   const query = 'insert into users(email, encrypted_password) values(?,?)';
-  let insertedUser = null;
-
   try {
-    const result = await db.query(query, [email, encryptedPassword]);
-    insertedUser = await Dao.findUserByPk(result.insertId);
+    const [result] = await db.execute(query, [email, encryptedPassword]);
+    return await Dao.findUserByPk(result.insertId);
   } catch (e) {
     throw new DaoError(`Cannot create user(email=${email})`, e);
   }
-
-  return insertedUser;
 };
 
 Dao.updateUser = async (userPk, updateInfo) => {
@@ -74,7 +61,7 @@ Dao.updateUser = async (userPk, updateInfo) => {
   args.push(userPk);
 
   try {
-    await db.query(query, args);
+    await db.execute(query, args);
   } catch (e) {
     throw new DaoError(`Cannot update user(pk=${userPk})`, e);
   }
@@ -87,15 +74,12 @@ Dao.findUserActivationByEmail = async (email) => {
   from user_activations as ua
   left join users on ua.email = users.email
   where ua.email = ?`;
-  let userActivations = [];
-
   try {
-    userActivations = await db.query(query, [email]);
+    const [userActivations] = await db.execute(query, [email]);
+    return userActivations[0];
   } catch (e) {
     throw new DaoError(`Cannot find user activation(email=${email})`, e);
   }
-
-  return userActivations[0];
 };
 
 Dao.updateUserActivation = async (userActivationPk, updateInfo) => {
@@ -112,7 +96,7 @@ Dao.updateUserActivation = async (userActivationPk, updateInfo) => {
   args.push(userActivationPk);
 
   try {
-    await db.query(query, args);
+    await db.execute(query, args);
   } catch (e) {
     throw new DaoError(`Cannot update user activation(pk=${userActivationPk})`, e);
   }

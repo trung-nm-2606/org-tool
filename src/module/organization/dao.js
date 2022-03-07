@@ -16,68 +16,92 @@ Dao.findOrganizationsByUserPk = async (userPk) => {
   where ou.user_pk = ?`;
 
   try {
-    const organizations = await db.query(query, [userPk]);
+    const [organizations] = await db.execute(query, [userPk]);
     return organizations;
   } catch (e) {
     throw new DaoError(`Cannot get organizations by userPk(${userPk})`, e);
   }
 };
 
-Dao.createOrganization = (name, desc, authenticatedUser) => {
+Dao.createOrganization = async (name, desc, authenticatedUser) => {
   const errMsg = `Cannot create organization(name=${name},desc=${desc})`;
-  return new Promise((resolve, reject) => {
-    db.getConnection((e, conn) => {
-      if (e) {
-        return reject(new DaoError(errMsg, e));
-      }
-      conn.beginTransaction((e) => {
-        if (e) {
-          conn.rollback(() => {
-            conn.release();
-            return reject(new DaoError(errMsg, e));
-          });
-          return;
-        }
+  let conn, query;
+  const { pk: userPk } = authenticatedUser;
 
-        const query = 'insert into organizations(name, description, created_by, updated_by, status) values(?,?,?,?,?)';
-        const { pk: userPk } = authenticatedUser;
-        conn.query(query, [name, desc, userPk, userPk, 'active'], (e, result) => {
-          if (e) {
-            conn.rollback(() => {
-              conn.release();
-              return reject(new DaoError(errMsg, e));
-            });
-            return;
-          }
+  try {
+    conn = await db.getConnection();
+    await conn.beginTransaction();
 
-          const organizationPk = result.insertId;
-          const query = 'insert into organizations_users(organization_pk, user_pk, role) values(?,?,?)';
-          conn.query(query, [organizationPk, userPk, 'owner'], (e) => {
-            if (e) {
-              conn.rollback(() => {
-                conn.release();
-                return reject(new DaoError(errMsg, e));
-              });
-              return;
-            }
+    query = 'insert into organizations(name, description, created_by, updated_by, status) values(?,?,?,?,?)';
+    const [result] = await conn.execute(query, [name, desc, userPk, userPk, 'active']);
+    const organizationPk = result.insertId;
 
-            conn.commit((e) => {
-              if (e) {
-                conn.rollback(() => {
-                  conn.release();
-                  return reject(new DaoError(errMsg, e));
-                });
-                return;
-              }
+    console.log('Last inserted id of organization: ', organizationPk);
+    query = 'insert into organizations_users(organization_pk, user_pk, role) values(?,?,?)';
+    await conn.execute(query, [organizationPk, userPk, 'owner']);
 
-              conn.release();
-              resolve(true);
-            });
-          });
-        });
-      });
-    });
-  });
+    await conn.commit();
+  } catch (e) {
+    if (conn) await conn.rollback();
+    throw new DaoError(errMsg, e);
+  } finally {
+    if (conn) conn.release();
+  }
+
+  return true;
+  // return new Promise((resolve, reject) => {
+  //   db.getConnection((e, conn) => {
+  //     if (e) {
+  //       return reject(new DaoError(errMsg, e));
+  //     }
+  //     conn.beginTransaction((e) => {
+  //       if (e) {
+  //         conn.rollback(() => {
+  //           conn.release();
+  //           return reject(new DaoError(errMsg, e));
+  //         });
+  //         return;
+  //       }
+
+  //       const query = 'insert into organizations(name, description, created_by, updated_by, status) values(?,?,?,?,?)';
+  //       const { pk: userPk } = authenticatedUser;
+  //       conn.query(query, [name, desc, userPk, userPk, 'active'], (e, result) => {
+  //         if (e) {
+  //           conn.rollback(() => {
+  //             conn.release();
+  //             return reject(new DaoError(errMsg, e));
+  //           });
+  //           return;
+  //         }
+
+  //         const organizationPk = result.insertId;
+  //         const query = 'insert into organizations_users(organization_pk, user_pk, role) values(?,?,?)';
+  //         conn.query(query, [organizationPk, userPk, 'owner'], (e) => {
+  //           if (e) {
+  //             conn.rollback(() => {
+  //               conn.release();
+  //               return reject(new DaoError(errMsg, e));
+  //             });
+  //             return;
+  //           }
+
+  //           conn.commit((e) => {
+  //             if (e) {
+  //               conn.rollback(() => {
+  //                 conn.release();
+  //                 return reject(new DaoError(errMsg, e));
+  //               });
+  //               return;
+  //             }
+
+  //             conn.release();
+  //             resolve(true);
+  //           });
+  //         });
+  //       });
+  //     });
+  //   });
+  // });
 };
 
 Dao.updateOrganization = async (organizationPk, userPk, updateInfo) => {
@@ -95,7 +119,7 @@ Dao.updateOrganization = async (organizationPk, userPk, updateInfo) => {
   args.push(organizationPk);
 
   try {
-    await db.query(query, args);
+    await db.execute(query, args);
   } catch (e) {
     throw new DaoError(`Cannot update organization(pk=${organizationPk})`, e);
   }
@@ -106,7 +130,7 @@ Dao.updateOrganization = async (organizationPk, userPk, updateInfo) => {
 Dao.deleteOrganization = async (organizationPk) => {
   const query = 'delete from organizations where pk = ?';
   try {
-    await db.query(query, [organizationPk]);
+    await db.execute(query, [organizationPk]);
   } catch (e) {
     throw new DaoError(`Cannot delete organization(pk=${organizationPk})`, e);
   }
@@ -116,15 +140,12 @@ Dao.deleteOrganization = async (organizationPk) => {
 
 Dao.findOrganizationByPk = async (pk) => {
   const query = `select * from organizations where pk = ?`;
-  let organizations = [];
-
   try {
-    organizations = await db.query(query, [pk]);
+    const [organizations] = await db.execute(query, [pk]);
+    return organizations[0];
   } catch (e) {
     throw new DaoError(`Cannot get organization by pk(${pk})`, e);
   }
-
-  return organizations[0];
 };
 
 Dao.findMembersByOrganizationPk = async (organizationPk, memberPk = '') => {
@@ -136,7 +157,7 @@ Dao.findMembersByOrganizationPk = async (organizationPk, memberPk = '') => {
   if (memberPk) args.push(memberPk);
 
   try {
-    const members = await db.query(query, args);
+    const [members] = await db.execute(query, args);
     return members;
   } catch (e) {
     throw new DaoError(`Cannot get members of organization(pk=${organizationPk})`, e);
@@ -149,7 +170,7 @@ Dao.findOrganizationsOwnedByUserPk = async (userPk) => {
   where ou.role = ? and ou.user_pk = ?`;
 
   try {
-    const organizations = await db.query(query, ['owner', userPk]);
+    const [organizations] = await db.execute(query, ['owner', userPk]);
     return organizations;
   } catch (e) {
     throw new DaoError(`Cannot get organizations owned by user(pk=${userPk})`, e);
@@ -160,7 +181,7 @@ Dao.addUserToOrganization = async (organizationPk, userPk) => {
   const query = 'insert into organizations_users(organization_pk, user_pk, role) values(?,?,?)';
 
   try {
-    await db.query(query, [organizationPk, userPk, 'member']);
+    await db.execute(query, [organizationPk, userPk, 'member']);
   } catch (e) {
     throw new DaoError(`Cannot add member(pk=${userPk}) to organization(pk=${organizationPk})`, e);
   }
@@ -172,7 +193,7 @@ Dao.removeUserFromOrganization = async (organizationPk, userPk) => {
   const query = 'delete from organizations_users where organization_pk = ? and user_pk = ?';
 
   try {
-    await db.query(query, [organizationPk, userPk]);
+    await db.execute(query, [organizationPk, userPk]);
   } catch (e) {
     throw new DaoError(`Cannot remove member(pk=${userPk}) from organization(pk=${organizationPk})`, e);
   }

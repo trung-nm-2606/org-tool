@@ -7,7 +7,7 @@ const ViewGroups = () => {
     <>
       <div className="d-flex align-items-center justify-content-start">
         <h3 className="me-2 mb-0">Groups</h3>
-        <Link className="btn btn-sm btn-outline-primary" to="/groups/new">New Group</Link>
+        <Link className="btn btn-sm btn-outline-primary" to="/management/groups/new">New Group</Link>
       </div>
       <div>
         <GroupsTable />

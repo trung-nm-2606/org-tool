@@ -1,5 +1,5 @@
-const mysql = require('mysql')
-const util = require('util');
+const mysql = require('mysql2')
+// const util = require('util');
 
 const pool = mysql.createPool({
     connectionLimit: 10,
@@ -9,6 +9,6 @@ const pool = mysql.createPool({
     database: 'org_tool'
 });
 
-pool.query = util.promisify(pool.query).bind(pool);
+// pool.query = util.promisify(pool.query).bind(pool);
 
-module.exports = pool;
+module.exports = pool.promise();
