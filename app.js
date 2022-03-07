@@ -8,6 +8,7 @@ const logger = require('morgan');
 const app = express();
 const UserRouter = require('./src/module/user/router');
 const OrganizationRouter = require('./src/module/organization/router');
+const OrganizationTransactionRouter = require('./src/module/organization_transaction/router');
 const BaseController = require('./src/module/base/controller');
 
 // view engine setup
@@ -35,6 +36,7 @@ app.use(express.static('react-app/build'));
 
 app.use(UserRouter);
 app.use(OrganizationRouter);
+app.use(OrganizationTransactionRouter);
 app.use(BaseController.handleError);
 
 // All not-found routes served by ExpressJs will be directed to ReactJS
