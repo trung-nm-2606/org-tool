@@ -4,7 +4,7 @@ const Dao = require('./dao');
 
 const Controller = {};
 
-Controller.initGroupTransaction = async (req, res, next) => {
+Controller.initTransaction = async (req, res, next) => {
   const { organizationPk } = req.params;
   const { view: { resp } } = res.locals;
   const authenticatedUser = session.getAuthenticatedUser(req);
@@ -19,7 +19,7 @@ Controller.initGroupTransaction = async (req, res, next) => {
   };
 
   try {
-    await Dao.createTransaction(transaction);
+    await Dao.initTransaction(transaction);
     resp.setOperMessage(`Group transaction is initialized successfully`);
   } catch (e) {
     next(e);
@@ -34,7 +34,7 @@ Controller.getCurrentBalance = async (req, res, next) => {
   const { view: { resp } } = res.locals;
 
   try {
-    const latestTransaction = await Dao.getLatestTransactionByOrganization(organizationPk);
+    const latestTransaction = await Dao.getLatestTransactionByOrganizationPkAndType(organizationPk);
     if (!latestTransaction) {
       next(new UnprocessableEntityError(`Cannot get current balance of group(${organizationPk})`));
       return;
@@ -42,8 +42,34 @@ Controller.getCurrentBalance = async (req, res, next) => {
 
     resp.setOperMessage({
       pk: organizationPk,
-      current_balance: latestTransaction.value_before + latestTransaction.changes
+      current_balance: latestTransaction.current_balance
     });
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
+};
+
+Controller.createTransaction = async (req, res, next) => {
+  const { organizationPk } = req.params;
+  const { view: { resp } } = res.locals;
+  const { changes, description, unit, type, personal } = req.body;
+  const authenticatedUser = session.getAuthenticatedUser(req);
+
+  const transaction = {
+    organization_pk: organizationPk,
+    changes,
+    description,
+    unit,
+    type,
+    personal
+  };
+
+  try {
+    await Dao.createTransaction(transaction, authenticatedUser);
+    resp.setOperMessage(`Group transaction is created successfully`);
   } catch (e) {
     next(e);
     return;

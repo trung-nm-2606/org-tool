@@ -15,7 +15,7 @@ Dao.findInitialTransactionByOrganizationPk = async (organizationPk) => {
   }
 };
 
-Dao.createTransaction = async ({
+Dao.initTransaction = async ({
   organization_pk,
   changes,
   value_before,
@@ -42,8 +42,67 @@ Dao.createTransaction = async ({
   return true;
 };
 
-Dao.getLatestTransactionByOrganization = async (organizationPk) => {
-  const query = 'select * from organization_transactions order by created_at desc limit 1';
+Dao.createTransaction = async ({
+  organization_pk,
+  changes,
+  description,
+  unit,
+  type,
+  personal
+}, authenticatedUser) => {
+  const query = `insert into organization_transactions(
+    organization_pk, changes, value_before, description,
+    ref_pk, ref_table, unit, proof_url,
+    type, personal, created_by, updated_by
+  ) values (?,?,?,?,?,?,?,?,?,?,?,?)`;
+  let conn;
+
+  try {
+    conn = await db.getConnection();
+    await conn.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
+
+    await conn.execute(`select * from organization_transactions
+    where organization_pk = ? and type = ? order by created_at desc limit 1 for update`, [
+      organization_pk,
+      type
+    ]);
+
+    const [transactions] = await conn.execute(`select * from organization_transactions
+    where organization_pk = ? and (type = ? or type = 'init') order by created_at desc limit 1`, [
+      organization_pk,
+      type
+    ]);
+    const transaction = transactions[0];
+    if (!transaction) {
+      throw `Latest transaction of group(${organization_pk}) with type(${type}) is not found`;
+    }
+
+    const { changes: latestChanges, value_before: valueBefore } = transaction;
+    const newValueBefore = transaction.type === 'deposit' ? valueBefore + latestChanges : valueBefore - latestChanges;
+
+    await conn.execute(query, [
+      organization_pk, changes, newValueBefore, description,
+      null, null, unit, null,
+      type, personal,
+      authenticatedUser.pk,
+      authenticatedUser.pk
+    ]);
+
+    await conn.commit();
+
+    return true;
+  } catch (e) {
+    if (conn) conn.rollback();
+    throw new DaoError(`Cannot create new transaction for group(${organization_pk})`, e);
+  } finally {
+    if (conn) conn.release();
+  }
+};
+
+Dao.getLatestTransactionByOrganizationPkAndType = async (organizationPk, type = 'deposit') => {
+  const query = `select *,
+  (organization_transactions.value_before + organization_transactions.changes)as current_balance
+  from organization_transactions order by created_at desc limit 1`;
 
   try {
     const [transactions] = await db.execute(query, [organizationPk]);

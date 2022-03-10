@@ -13,7 +13,7 @@ groupTransactionRouter.post('/:organizationPk/init', [
   session.authenticateUser,
   OrganizationValidator.validateOrganizationOwner,
   Validator.validateExistingInitialTransaction,
-  Controller.initGroupTransaction,
+  Controller.initTransaction,
   BaseController.render
 ]);
 
@@ -22,6 +22,15 @@ groupTransactionRouter.get('/:organizationPk/get-current-balance', [
   session.authenticateUser,
   OrganizationValidator.validateOrganizationOwner,
   Controller.getCurrentBalance,
+  BaseController.render
+]);
+
+groupTransactionRouter.post('/:organizationPk/create', [
+  ApiView.api,
+  session.authenticateUser,
+  OrganizationValidator.validateOrganizationOwner,
+  Validator.validateRequiredParameters,
+  Controller.createTransaction,
   BaseController.render
 ]);
 

@@ -36,7 +36,6 @@ Dao.createOrganization = async (name, desc, authenticatedUser) => {
     const [result] = await conn.execute(query, [name, desc, userPk, userPk, 'active']);
     const organizationPk = result.insertId;
 
-    console.log('Last inserted id of organization: ', organizationPk);
     query = 'insert into organizations_users(organization_pk, user_pk, role) values(?,?,?)';
     await conn.execute(query, [organizationPk, userPk, 'owner']);
 
