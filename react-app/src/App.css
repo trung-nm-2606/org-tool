@@ -138,6 +138,9 @@ body {
   .function-side-bar {
     width: 16rem;
   }
+  .working-space {
+    width: calc(100vw - 20rem);
+  }
 }
 
 @media (min-width: 1200px) {
