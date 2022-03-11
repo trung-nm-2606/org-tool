@@ -1,11 +1,12 @@
 import React from 'react';
 import { BrowserRouter, NavLink } from "react-router-dom";
 import { PersonCircle, ArrowRightCircleFill, Power, PlusCircle, GearWideConnected } from 'react-bootstrap-icons';
+import AppLayout from './AppLayout';
 
-const AppLayout = ({ children }) => {
+const RootLayout = ({ children }) => {
   return (
     <BrowserRouter>
-      <div className="root-app d-flex flex-column align-items-center justity-content-start">
+      <div className="root-app">
         <div className="top-nav p-2 w-100 bg-light d-flex align-items-center flex-row">
           <div className="top-nav w-100 bg-light d-flex align-items-center flex-row">
             <PersonCircle role="button" className="ms-2 me-2 user-icon" size={24} />
@@ -34,11 +35,11 @@ const AppLayout = ({ children }) => {
           </div>
         </div>
         <div>
-          {children}
+          <AppLayout />
         </div>
       </div>
     </BrowserRouter>
   );
 };
 
-export default AppLayout;
+export default RootLayout;

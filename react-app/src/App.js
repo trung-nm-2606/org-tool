@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
 import AppRoutes from "./AppRoutes";
 import Layout from './Layout';
-import AppLayout from './AppLayout';
+import RootLayout from './layout/RootLayout';
 import appRedux from './redux/app';
 import axios from 'axios';
 
@@ -42,9 +42,9 @@ const App = () => {
   // }
 
   return (
-    <AppLayout>
+    <RootLayout>
       <AppRoutes />
-    </AppLayout>
+    </RootLayout>
   );
 }
 

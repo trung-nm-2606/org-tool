@@ -167,7 +167,24 @@ a.my-app.btn-outline:hover {
   transition: all 150ms;
 }
 
+.app-layout {
+  background-color: red;
+}
+
+.app-layout .left-side-bar {
+  width: 3.5rem;
+  background-color: blue;
+  height: 500px;
+}
+
+.app-layout .app-container {
+  width: calc(100% - 3.5rem);
+  background-color: green;
+  height: 500px;
+}
+
 @media (min-width: 576px) {
+
 }
 
 @media (min-width: 768px) {
@@ -176,6 +193,14 @@ a.my-app.btn-outline:hover {
     border-top-right-radius: 0;
     width: calc(100vw - 17rem);
     height: calc(100vh - 0.5rem);
+  }
+
+  .app-layout .left-side-bar {
+    width: 15rem;
+  }
+
+  .app-layout .app-container {
+    width: calc(100% - 15rem);
   }
 }
 
