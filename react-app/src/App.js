@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
 import AppRoutes from "./AppRoutes";
-import Layout from './Layout';
 import RootLayout from './layout/RootLayout';
 import appRedux from './redux/app';
 import axios from 'axios';
+import { BrowserRouter } from 'react-router-dom';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -42,9 +42,11 @@ const App = () => {
   // }
 
   return (
-    <RootLayout>
-      <AppRoutes />
-    </RootLayout>
+    <BrowserRouter>
+      <RootLayout>
+        <AppRoutes />
+      </RootLayout>
+    </BrowserRouter>
   );
 }
 
