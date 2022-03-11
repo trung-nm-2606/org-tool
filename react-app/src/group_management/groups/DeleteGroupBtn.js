@@ -2,10 +2,10 @@ import React from 'react';
 import axios from 'axios';
 import { TrashFill } from 'react-bootstrap-icons';
 
-const DeleteGroupBtn = ({ groupPk, groupName, onError, onSuccess }) => {
+const DeleteGroupBtn = ({ groupPk, groupName, isActive = false, onError, onSuccess }) => {
   const deleteGroup = () => {
     axios
-      .delete(`/api/groups/${groupPk}/delete`)
+      .delete(`/api/groups/${groupPk}/delete?isActive=${isActive ? '1' : '0'}`)
       .then(onSuccess)
       .catch(() => onError(groupName))
     ;

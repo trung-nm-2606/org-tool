@@ -67,6 +67,7 @@ const AllGroups = () => {
                         <DeleteGroupBtn
                           groupPk={pk}
                           groupName={name}
+                          isActive={authUser?.activeGroup?.pk === pk}
                           onSuccess={loadGroups}
                           onError={onErrorDeleting}
                         />

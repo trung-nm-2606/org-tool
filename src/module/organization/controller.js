@@ -54,10 +54,12 @@ Controller.updateOrganization = async (req, res, next) => {
 
 Controller.deleteOrganization = async (req, res, next) => {
   const { organizationPk } = req.params;
+  const { isActive } = req.query;
   const { view: { resp } } = res.locals;
+  const authenticatedUser = session.getAuthenticatedUser(req);
 
   try {
-    await Dao.deleteOrganization(organizationPk);
+    await Dao.deleteOrganization(organizationPk, isActive === '1', authenticatedUser.pk);
     resp.setPayload({ pk: organizationPk });
     res.json(resp);
   } catch (e) {
