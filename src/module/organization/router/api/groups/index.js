@@ -39,4 +39,11 @@ groupsRouter.delete('/:organizationPk/delete', [
   BaseController.render
 ]);
 
+groupsRouter.post('/:organizationPk/set-active', [
+  ApiView.api,
+  session.authenticateUser,
+  Controller.setActiveGroup,
+  BaseController.render
+]);
+
 module.exports = groupsRouter;

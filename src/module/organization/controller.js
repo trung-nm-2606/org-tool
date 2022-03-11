@@ -64,6 +64,8 @@ Controller.deleteOrganization = async (req, res, next) => {
     next(e);
     return;
   }
+
+  next();
 };
 
 Controller.getMembers = async (req, res, next) => {
@@ -124,6 +126,23 @@ Controller.generateInvitationLink = (req, res, next) => {
       organizationPk
     );
     resp.setPayload(`http://localhost:8080/users/invitation?token=${token}`);
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
+};
+
+Controller.setActiveGroup = async (req, res, next) => {
+  const { organizationPk } = req.params;
+  const { view: { resp } } = res.locals;
+  const authenticatedUser = session.getAuthenticatedUser(req);
+
+  try {
+    await Dao.setActiveGroup(organizationPk, authenticatedUser.pk);
+    resp.setOperMessage(`Set active group successullfy`);
+    res.json(resp);
   } catch (e) {
     next(e);
     return;

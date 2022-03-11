@@ -10,7 +10,8 @@ const appRedux = createSlice({
   initialState,
   reducers: {
     setLoginAt: (state, { payload: loginAt }) => { state.loginAt = loginAt },
-    setAuthUser: (state, { payload: authUser }) => { state.authUser = authUser }
+    setAuthUser: (state, { payload: authUser }) => { state.authUser = authUser },
+    setActiveGroup: (state, { payload: activeGroup }) => { state.authUser.activeGroup = activeGroup }
   }
 });
 

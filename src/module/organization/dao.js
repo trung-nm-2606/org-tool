@@ -158,6 +158,19 @@ Dao.findActiveGroupByUserPk = async (userPk) => {
   } catch (e) {
     throw new DaoError(`Cannot find active group for user(pk=${userPk})`, e);
   }
+};
+
+Dao.setActiveGroup = async (organizationPk, userPk) => {
+  let query = 'update organizations_users set active = 0 where ';
+  try {
+    query = 'update organizations_users set active = 0 where active = 1 and user_pk = ?';
+    await db.execute(query, [userPk]);
+
+    query = 'update organizations_users set active = 1 where organization_pk = ? and user_pk = ?';
+    await db.execute(query, [organizationPk, userPk]);
+  } catch (e) {
+    throw new DaoError(`Cannot delete organization(pk=${organizationPk})`, e);
+  }
 
   return true;
 };

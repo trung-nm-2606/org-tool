@@ -1,8 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import appRedux from './redux/app';
+import { useNavigate } from 'react-router-dom';
 
 const AllGroups = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const authUser = useSelector(state => state.app.authUser);
   const [message, setMessage] = useState('');
   const [groups, setGroups] = useState([]);
@@ -52,7 +56,19 @@ const AllGroups = () => {
                     <p className="card-text">
                       <small>{`${members_count} thành viên`}</small>
                     </p>
-                    <a href="/group/dashboard" className="btn btn-outline-primary" style={{ 'font-size': '.875rem' }}>Xem chi tiết</a>
+                    <a
+                      href="/group/dashboard"
+                      className="btn btn-outline-primary"
+                      style={{ 'font-size': '.875rem' }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate('/group/dashboard');
+                        dispatch(appRedux.actions.setActiveGroup({ pk, name }));
+                        axios.post(`/api/groups/${pk}/set-active`)
+                      }}
+                    >
+                      Xem chi tiết
+                    </a>
                   </div>
                 </div>
               </div>
