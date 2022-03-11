@@ -42,14 +42,6 @@ const RootLayout = ({ children }) => {
                   {authUser?.activeGroup?.name}
                 </span>
               </div>
-              {/* <NavLink
-                className="none-decoration d-flex flex-row align-items-center"
-                to={inGroup ? '/group-management' : '/group/dashboard'}
-              >
-                <span className="label text-success">
-                  {authUser?.activeGroup?.name}
-                </span>
-              </NavLink> */}
             </div>
             <ArrowRightCircleFill className="text-success" size={24} />
           </div>
@@ -58,10 +50,6 @@ const RootLayout = ({ children }) => {
               <PlusCircle size={16} className="me-1" />
               <span className="d-none d-sm-block">Tạo nhóm mới</span>
             </NavLink>
-            {/* <NavLink to="/group-management" className="my-app ms-2 me-2 d-flex align-items-center flex-row">
-              <GearWideConnected size={16} className="me-1" />
-              <span className="d-none d-sm-block">Q.Lý Nhóm</span>
-            </NavLink> */}
           </div>
         </div>
         <div>

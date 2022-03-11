@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import appRedux from './redux/app';
 import { useNavigate } from 'react-router-dom';
+import DeleteGroupBtn from './group_management/groups/DeleteGroupBtn';
+import { PencilSquare } from 'react-bootstrap-icons';
 
 const AllGroups = () => {
   const navigate = useNavigate();
@@ -29,6 +31,10 @@ const AllGroups = () => {
     ;
   }, []);
 
+  const onErrorDeleting = useCallback((groupName) => setMessage(`Cannot delete the group ${groupName}`), []);
+
+  const updateGroup = (group) => navigate('/group-management/update', { state: group });
+
   useEffect(() => {
     loadGroups();
   }, [/* componentDidMount */]);
@@ -50,8 +56,28 @@ const AllGroups = () => {
                 <div className="card">
                   <div className="card-body">
                     <div className="mb-2">
-                      <h4 className={`card-title mb-0 ${authUser?.activeGroup?.pk === pk ? ' text-success' : ''}`}>{name}</h4>
-                      <span className="d-inline-block text-muted"><small>{`(${role})`}</small></span>
+                      <h4
+                        className={`card-title mb-0 ${authUser?.activeGroup?.pk === pk ? ' text-success' : ''}`}
+                        style={{ 'white-space': 'nowrap', overflow: 'hidden', 'text-overflow': 'ellipsis' }}
+                      >
+                        {name}
+                      </h4>
+                      <span className="d-inline-block text-muted me-2"><small>{`(${role})`}</small></span>
+                      <span className="me-2">
+                        <DeleteGroupBtn
+                          groupPk={pk}
+                          groupName={name}
+                          onSuccess={loadGroups}
+                          onError={onErrorDeleting}
+                        />
+                      </span>
+                      <span>
+                        <PencilSquare
+                          role="button"
+                          className="text-primary"
+                          onClick={() => updateGroup({ pk, name, description })}
+                        />
+                      </span>
                     </div>
                     <p className="card-text">
                       <small>{`${members_count} thành viên`}</small>

@@ -81,7 +81,7 @@ const GroupForm = ({ group }) => {
             disabled={submitting || !name}
             className="btn btn-outline-primary me-2"
           />
-          <Link className="btn" to="/management/groups">Cancel</Link>
+          <Link className="btn" to="/group-management">Cancel</Link>
         </div>
       </form>
     </>
