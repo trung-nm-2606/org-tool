@@ -4,12 +4,14 @@ import InviteMemberBtn from './InviteMemberBtn';
 import RemoveMemberBtn from './RemoveMemberBtn';
 import { useSelector } from 'react-redux';
 
-const MemberList = ({ groupPk }) => {
+const MemberList = () => {
   const authUser = useSelector(state => state.app.authUser);
   const [message, setMessage] = useState('');
   const [members, setMembers] = useState([]);
   const [gettingMembers, setGettingMembers] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
+
+  const groupPk = authUser?.activeGroup?.pk;
 
   const reloadMembers = useCallback((groupPk) => {
     if (!groupPk || groupPk <= 0) {
