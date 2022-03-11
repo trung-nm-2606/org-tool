@@ -6,6 +6,51 @@ body {
   overflow: hidden;
 }
 
+.top-nav .user-icon {
+  color: #1a73e8;
+}
+
+.my-app-primary-color {
+  color: #1a73e8 !important;
+}
+
+.my-app-primary-bg-color {
+  background-color: #1a73e8 !important;
+}
+
+.workspace-switcher {
+  background-color: #d2e3fc;
+  border-radius: 25rem;
+}
+
+.workspace-switcher .label {
+  /* color: #1a73e8 !important; */
+}
+
+.workspace-switcher .second-label {
+  font-size: 10px;
+}
+
+a.my-app {
+  text-decoration: none;
+  color: #1a73e8 !important;
+}
+
+a.none-decoration {
+  text-decoration: none;
+}
+
+a.my-app.btn-outline {
+  color: #1a73e8 !important;
+  border-color: #1a73e8 !important;
+}
+
+a.my-app.btn-outline:hover {
+  color: #fff !important;
+  border-color: #1a73e8 !important;
+  background-color: #1a73e8 !important;
+}
+
 .btn-link {
   font-size: .875rem;
 }
