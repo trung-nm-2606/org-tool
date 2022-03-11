@@ -59,11 +59,50 @@ const MemberList = () => {
       )}
       <div className="mb-2">{`Number of members: ${members?.length} members`}</div>
       {isOwner && (
-        <div>
+        <div className="mb-2">
           <InviteMemberBtn groupPk={groupPk} onSuccess={() => reloadMembers(groupPk)} />
         </div>
       )}
-      <div className="table-responsive">
+      {!gettingMembers && (
+        <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+          {members.map(({ pk, name, full_name, email, status, role }, index) => (
+            <div className="col mb-2" key={`${pk}-${name}-${index}`}>
+              <div className="card">
+                <div className="card-body">
+                  <div className="mb-2">
+                    <h4
+                      className={`card-title mb-0 ${authUser?.activeGroup?.pk === pk ? ' text-success' : ''}`}
+                      style={{ 'white-space': 'nowrap', overflow: 'hidden', 'text-overflow': 'ellipsis' }}
+                    >
+                      {name}
+                    </h4>
+                    <span className="d-inline-block text-muted me-2"><small>{`(${role})`}</small></span>
+                    {role !== 'owner' && (
+                      <span className="me-2">
+                        <RemoveMemberBtn
+                          groupPk={groupPk}
+                          memberPk={pk}
+                          memberName={`${name} (${full_name})`}
+                          onError={message => setMessage(message)}
+                          onSuccess={() => reloadMembers(groupPk)}
+                          isOwner={isOwner}
+                        />
+                      </span>
+                    )}
+                  </div>
+                  <p
+                    className="card-text"
+                    style={{ 'white-space': 'nowrap', overflow: 'hidden', 'text-overflow': 'ellipsis' }}
+                  >
+                    <small>{email}</small>
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      {/* <div className="table-responsive">
         <table className="table table-striped table-hover fw-light">
           <thead>
             <tr>
@@ -101,7 +140,7 @@ const MemberList = () => {
             ))}
           </tbody>
         </table>
-      </div>
+      </div> */}
     </>
   );
 };
