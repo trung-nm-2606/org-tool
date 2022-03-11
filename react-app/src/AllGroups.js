@@ -23,10 +23,16 @@ const AllGroups = () => {
         const { payload } = data;
         setGroups(payload);
 
-        const [group] = payload;
-        if (isActive && group) {
-          const { pk, name } = group;
-          dispatch(appRedux.actions.setActiveGroup({ pk, name }));
+        let activeGroup;
+        if (isActive) {
+          activeGroup = payload[0];
+        } else {
+          activeGroup = payload.find(group => group.active);
+        }
+        const { pk, name } = activeGroup || {};
+        dispatch(appRedux.actions.setActiveGroup({ pk, name }));
+
+        if (activeGroup && activeGroup.pk) {
           axios.post(`/api/groups/${pk}/set-active`);
         }
       })

@@ -5,7 +5,7 @@ const DaoError = require('../../model/error/DaoError');
 const Dao = {};
 
 Dao.findOrganizationsByUserPk = async (userPk) => {
-  const query = `select o.*, ou.role, tmp.members_count
+  const query = `select o.*, ou.role, ou.active, tmp.members_count
   from organizations_users as ou
   left join organizations o on ou.organization_pk = o.pk
   left join (
@@ -38,6 +38,19 @@ Dao.createOrganization = async (name, desc, authenticatedUser) => {
 
     query = 'insert into organizations_users(organization_pk, user_pk, role) values(?,?,?)';
     await conn.execute(query, [organizationPk, userPk, 'owner']);
+
+    query = `update organizations_users
+    set active = 1
+    where organization_pk = (
+      select pk
+      from organizations
+      where created_by = ? and (
+        select count(*) from organizations_users where active = 1 and user_pk = ?
+      ) = 0
+      order by created_at
+      limit 1
+    );`;
+    await conn.execute(query, [userPk, userPk]);
 
     await conn.commit();
   } catch (e) {
@@ -73,7 +86,7 @@ Dao.updateOrganization = async (organizationPk, userPk, updateInfo) => {
   return true;
 };
 
-Dao.deleteOrganization = async (organizationPk, isActive, userPk) => {
+Dao.deleteOrganization = async (organizationPk) => {
   let query;
   try {
     query = 'delete from organizations where pk = ?';
