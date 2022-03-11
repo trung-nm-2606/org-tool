@@ -28,7 +28,7 @@ const GroupForm = ({ group }) => {
         if (oper?.status === 'failed') {
           setMessage(oper?.message);
         } else {
-          navigate('/management/groups');
+          navigate('/group-management');
         }
       })
       .catch(() => setMessage(apiErrorMessage))
