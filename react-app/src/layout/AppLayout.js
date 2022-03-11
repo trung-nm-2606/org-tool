@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 const AppLayout = ({ navLinks = [], children }) => {
   return (
     <div className="app-layout w-100 d-flex">
-      <div className="left-side-bar">
+      <div className="left-side-bar pb-3">
         <ul className="list-group list-group-flush">
           {navLinks.map(({ to, label, Icon }, index) => (
             <li role="button" className="list-group-item pe-0" key={`${index}-${to}-sm`}>

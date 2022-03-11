@@ -176,9 +176,9 @@ a.my-app.btn-outline:hover {
 
 .app-layout .left-side-bar {
   width: 3.5rem;
-  height: 500px;
   border-right: 1px solid rgba(0,0,0,.08);
   font-size: .875rem;
+  height: calc(100vh - 3rem);
 }
 
 .app-layout .left-side-bar a {
@@ -192,16 +192,33 @@ a.my-app.btn-outline:hover {
 
 .app-layout .app-container {
   width: calc(100% - 3.5rem);
-  height: 500px;
 }
 
-.left-side-bar .list-group-item .label {
+.workspace-switcher .label {
+  font-size: .875rem;
+}
+
+.workspace-switcher .active-group {
+  width: 7rem;
+  max-width: 20rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* .left-side-bar .list-group-item .label {
   position: relative;
   top: 2px;
-}
+} */
 
 @media (min-width: 576px) {
+  .app-layout .left-side-bar {
+    height: calc(100vh - 4rem);
+  }
 
+  .workspace-switcher .active-group {
+    width: 10rem;
+  }
 }
 
 @media (min-width: 768px) {
@@ -218,6 +235,10 @@ a.my-app.btn-outline:hover {
 
   .app-layout .app-container {
     width: calc(100% - 15rem);
+  }
+
+  .workspace-switcher .active-group {
+    width: auto;
   }
 }
 

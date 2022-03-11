@@ -10,21 +10,25 @@ const RootLayout = ({ children }) => {
           <div className="top-nav w-100 d-flex align-items-center flex-row">
             <PersonCircle role="button" className="ms-2 me-2 user-icon" size={24} />
             <div role="button" className="workspace-switcher bg-success bg-opacity-10 pt-1 pb-1 ps-2 ps-sm-4 pe-2 pe-sm-3 ms-2 me-2 d-flex flex-row align-items-center justify-content-center">
-              <div className="d-flex flex-column align-items-start me-3">
+              <div className="active-group d-flex flex-column align-items-start me-3">
                 <small className="text-muted second-label d-none d-sm-block">Active Group</small>
-                <span className="label text-success">Nhóm Lớp 6 - Buổi Sáng</span>
+                <NavLink className="none-decoration d-flex flex-row align-items-center" to="/group/dashboard">
+                  <span className="label text-success">Nhóm Lớp 6 - Buổi Sáng</span>
+                </NavLink>
               </div>
-              <ArrowRightCircleFill className="text-success" size={16} />
+              <NavLink className="none-decoration" to="/group-management">
+                <ArrowRightCircleFill className="text-success" size={24} />
+              </NavLink>
             </div>
             <div className="action-button-bar d-flex align-items-center flex-row ms-2 me-2">
-              <NavLink to="/" className="my-app me-2 d-flex align-items-center flex-row">
+              <NavLink to="/group-management/new" className="my-app me-2 d-flex align-items-center flex-row">
                 <PlusCircle size={16} className="me-1" />
                 <span className="d-none d-sm-block">Tạo nhóm mới</span>
               </NavLink>
-              <NavLink to="/" className="my-app ms-2 me-2 d-flex align-items-center flex-row">
+              {/* <NavLink to="/group-management" className="my-app ms-2 me-2 d-flex align-items-center flex-row">
                 <GearWideConnected size={16} className="me-1" />
                 <span className="d-none d-sm-block">Q.Lý Nhóm</span>
-              </NavLink>
+              </NavLink> */}
             </div>
           </div>
           <div>
