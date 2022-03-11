@@ -60,7 +60,7 @@ Controller.deleteOrganization = async (req, res, next) => {
 
   try {
     await Dao.deleteOrganization(organizationPk, isActive === '1', authenticatedUser.pk);
-    resp.setPayload({ pk: organizationPk });
+    resp.setPayload({ pk: organizationPk, isActive: isActive === '1' });
     res.json(resp);
   } catch (e) {
     next(e);

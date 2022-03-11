@@ -14,7 +14,7 @@ const AllGroups = () => {
   const [groups, setGroups] = useState([]);
   const [gettingGroups, setGettingGroups] = useState(true);
 
-  const loadGroups = useCallback(() => {
+  const loadGroups = useCallback((isActive) => {
     setMessage('');
     setGettingGroups(true);
     axios
@@ -22,6 +22,13 @@ const AllGroups = () => {
       .then(({ data }) => {
         const { payload } = data;
         setGroups(payload);
+
+        const [group] = payload;
+        if (isActive && group) {
+          const { pk, name } = group;
+          dispatch(appRedux.actions.setActiveGroup({ pk, name }));
+          axios.post(`/api/groups/${pk}/set-active`);
+        }
       })
       .catch(({ data }) => {
         const { oper } = data;
@@ -67,8 +74,7 @@ const AllGroups = () => {
                         <DeleteGroupBtn
                           groupPk={pk}
                           groupName={name}
-                          isActive={authUser?.activeGroup?.pk === pk}
-                          onSuccess={loadGroups}
+                          onSuccess={() => loadGroups(authUser?.activeGroup?.pk === pk)}
                           onError={onErrorDeleting}
                         />
                       </span>
@@ -91,7 +97,7 @@ const AllGroups = () => {
                         e.preventDefault();
                         navigate('/group/dashboard');
                         dispatch(appRedux.actions.setActiveGroup({ pk, name }));
-                        axios.post(`/api/groups/${pk}/set-active`)
+                        axios.post(`/api/groups/${pk}/set-active`);
                       }}
                     >
                       Xem chi tiết

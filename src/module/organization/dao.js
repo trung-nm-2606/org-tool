@@ -78,19 +78,6 @@ Dao.deleteOrganization = async (organizationPk, isActive, userPk) => {
   try {
     query = 'delete from organizations where pk = ?';
     await db.execute(query, [organizationPk]);
-
-    if (isActive) {
-      query = `update organizations_users
-      set active = 1
-      where organization_pk = (
-          select pk
-          from organizations
-          where created_by = ?
-          order by created_at
-          limit 1
-      )`;
-      await db.execute(query, [userPk]);
-    }
   } catch (e) {
     throw new DaoError(`Cannot delete organization(pk=${organizationPk})`, e);
   }
