@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { NavLink, useLocation } from "react-router-dom";
 import { PersonCircle, ArrowRightCircleFill, Power, PlusCircle, GearWideConnected } from 'react-bootstrap-icons';
 
 const RootLayout = ({ children }) => {
+  const authUser = useSelector(state => state.app.authUser);
   const [inGroup, setInGroup] = useState(false);
   const location = useLocation();
 
@@ -28,7 +30,9 @@ const RootLayout = ({ children }) => {
                 className="none-decoration d-flex flex-row align-items-center"
                 to={inGroup ? '/group-management' : '/group/dashboard'}
               >
-                <span className="label text-success">Nhóm Lớp 6 - Buổi Sáng</span>
+                <span className="label text-success">
+                  {authUser?.activeGroup?.name}
+                </span>
               </NavLink>
             </div>
             <ArrowRightCircleFill className="text-success" size={24} />

@@ -147,4 +147,19 @@ Dao.removeUserFromOrganization = async (organizationPk, userPk) => {
   return true;
 };
 
+Dao.findActiveGroupByUserPk = async (userPk) => {
+  const query = `select o.* from organizations as o
+  left join organizations_users ou on ou.organization_pk = o.pk
+  where ou.active = 1 and ou.user_pk = ?`;
+
+  try {
+    const [organizations] = await db.execute(query, [userPk]);
+    return organizations[0];
+  } catch (e) {
+    throw new DaoError(`Cannot find active group for user(pk=${userPk})`, e);
+  }
+
+  return true;
+};
+
 module.exports = Dao;
