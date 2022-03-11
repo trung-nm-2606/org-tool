@@ -19,7 +19,7 @@ body {
 }
 
 .workspace-switcher {
-  background-color: #d2e3fc;
+  /* background-color: #d2e3fc; */
   border-radius: 25rem;
 }
 
@@ -168,19 +168,36 @@ a.my-app.btn-outline:hover {
 }
 
 .app-layout {
-  background-color: red;
+}
+
+.action-button-bar {
+  font-size: .875rem;
 }
 
 .app-layout .left-side-bar {
   width: 3.5rem;
-  background-color: blue;
   height: 500px;
+  border-right: 1px solid rgba(0,0,0,.08);
+  font-size: .875rem;
+}
+
+.app-layout .left-side-bar a {
+  border-right: 2px solid transparent;
+}
+
+.app-layout .left-side-bar a.active {
+  color: #1a73e8 !important;
+  border-right-color: #1a73e8 !important;
 }
 
 .app-layout .app-container {
   width: calc(100% - 3.5rem);
-  background-color: green;
   height: 500px;
+}
+
+.left-side-bar .list-group-item .label {
+  position: relative;
+  top: 2px;
 }
 
 @media (min-width: 576px) {
