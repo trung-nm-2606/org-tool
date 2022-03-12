@@ -85,6 +85,45 @@ Dao.createTransaction = async (fundPk, transaction, userPk) => {
     values(?,?,?,?,?,?,?,?,?)`;
     await conn.execute(query, [fundPk, message, amount, type, status, fundEventPk, proof, userPk, userPk]);
 
+    if (status === 'confirmed') {
+      const calc = type === 'withdrawal' ? `(balance - ${amount})` : `(balance + ${amount})`;
+      query = `update funds set balance = ${calc}, updated_by = ?, updated_at = ? where pk = ?`;
+      await conn.execute(query, [
+        userPk,
+        dateUtils.getMariaDbCurrentTimestamp(),
+        fundPk
+      ]);
+    }
+
+
+    await conn.commit();
+  } catch (e) {
+    if (conn) await conn.rollback();
+    throw new DaoError(`Cannot create transaction for fund(${fundPk})`, e);
+  } finally {
+    if (conn) conn.release();
+  }
+};
+
+Dao.markTransactionPaid = async (fundPk, transactionPk, userPk) => {
+  let conn, query;
+
+  try {
+    conn = await db.getConnection();
+    await conn.beginTransaction();
+
+    await conn.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
+
+    await conn.execute(`select * from transactions where pk = ? for update`, [transactionPk]);
+    await conn.execute(`select * from funds where pk = ? for update`, [fundPk]);
+
+    query = `update transactions set status = 'confirmed' where pk = ?`;
+    await conn.execute(query, [transactionPk]);
+
+    query = `select * from transactions where pk = ?`;
+    const [transaction] = await conn.execute(query, [transactionPk]);
+    const { type, amount } = transaction;
+
     const calc = type === 'withdrawal' ? `(balance - ${amount})` : `(balance + ${amount})`;
     query = `update funds set balance = ${calc}, updated_by = ?, updated_at = ? where pk = ?`;
     await conn.execute(query, [

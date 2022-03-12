@@ -59,6 +59,8 @@ Dao.createTransaction = async ({
 
   try {
     conn = await db.getConnection();
+    conn.beginTransaction();
+
     await conn.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
 
     await conn.execute(`select * from organization_transactions
