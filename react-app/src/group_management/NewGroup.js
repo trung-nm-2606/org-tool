@@ -1,5 +1,5 @@
 import React from 'react';
-import NewGroupForm from './group_management/groups/NewGroupForm';
+import NewGroupForm from './groups/NewGroupForm';
 
 const NewGroup = () => (
   <div className="m-3">

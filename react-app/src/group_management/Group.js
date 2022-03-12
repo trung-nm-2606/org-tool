@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import AppLayout from './layout/AppLayout';
+import AppLayout from '../layout/AppLayout';
 import { People, Clipboard, PiggyBank, FileSpreadsheet } from 'react-bootstrap-icons';
 
 const Dashboard = React.lazy(() => import('./Dashboard'));

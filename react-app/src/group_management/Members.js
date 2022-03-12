@@ -1,5 +1,5 @@
 import React from 'react';
-import MemberList from './group_management/members/MemberList';
+import MemberList from './members/MemberList';
 
 const Members = () => (
   <div className="m-3">

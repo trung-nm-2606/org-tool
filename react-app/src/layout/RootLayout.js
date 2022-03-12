@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { PersonCircle, ArrowRightCircleFill, Power, PlusCircle, GearWideConnected } from 'react-bootstrap-icons';
+import { PersonCircle, ArrowRightCircleFill, Power, PlusCircle } from 'react-bootstrap-icons';
 
 const RootLayout = ({ children }) => {
   const authUser = useSelector(state => state.app.authUser);

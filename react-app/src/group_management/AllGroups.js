@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import appRedux from './redux/app';
+import appRedux from '../redux/app';
 import { useNavigate } from 'react-router-dom';
-import DeleteGroupBtn from './group_management/groups/DeleteGroupBtn';
+import DeleteGroupBtn from './groups/DeleteGroupBtn';
 import { PencilSquare } from 'react-bootstrap-icons';
 
 const AllGroups = () => {

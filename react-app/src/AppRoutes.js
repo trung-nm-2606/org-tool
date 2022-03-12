@@ -1,8 +1,8 @@
 import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
-const GroupManagement = React.lazy(() => import('./GroupManagement'));
-const Group = React.lazy(() => import('./Group'));
+const GroupManagement = React.lazy(() => import('./group_management/GroupManagement'));
+const Group = React.lazy(() => import('./group_management/Group'));
 
 const Loading = () => (
   <span className="spinner-border spinner-border-sm m-3" role="status" aria-hidden="true"></span>
