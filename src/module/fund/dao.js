@@ -1,4 +1,5 @@
 const db = require('../../shared/db');
+const dateUtils = require('../../shared/date_utils');
 
 const Dao = {};
 
@@ -69,6 +70,35 @@ Dao.archiveFundEventByPk = async (fundEventPk, reason) => {
     return true;
   } catch (e) {
     throw new DaoError(`Cannot archive fund event(${fundEventPk})`, e);
+  }
+};
+
+Dao.createTransaction = async (fundPk, transaction, userPk) => {
+  const { message, amount, type, status, fundEventPk, proof,  } = transaction;
+  let conn, query;
+
+  try {
+    conn = await db.getConnection();
+    await conn.beginTransaction();
+
+    query = `insert into transactions(fund_pk, message, amount, type, status, fund_event_pk, proof, created_by, updated_pk)
+    values(?,?,?,?,?,?,?,?,?)`;
+    await conn.execute(query, [fundPk, message, amount, type, status, fundEventPk, proof, userPk, userPk]);
+
+    const calc = type === 'withdrawal' ? `(balance - ${amount})` : `(balance + ${amount})`;
+    query = `update funds set balance = ${calc}, updated_by = ?, updated_at = ? where pk = ?`;
+    await conn.execute(query, [
+      userPk,
+      dateUtils.getMariaDbCurrentTimestamp(),
+      fundPk
+    ]);
+
+    await conn.commit();
+  } catch (e) {
+    if (conn) await conn.rollback();
+    throw new DaoError(`Cannot create transaction for fund(${fundPk})`, e);
+  } finally {
+    if (conn) conn.release();
   }
 };
 
