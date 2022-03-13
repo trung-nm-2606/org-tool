@@ -14,6 +14,8 @@ Controller.getFundEvents = async (req, res) => {};
 
 Controller.archiveFundEvent = async (req, res) => {};
 
+Controller.cancelFundEvent = async (req, res) => {};
+
 Controller.createTransaction = async (req, res) => {};
 
 Controller.markTransactionPaid = async (req, res) => {};

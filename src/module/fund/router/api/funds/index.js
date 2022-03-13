@@ -8,7 +8,7 @@ const Validator = require('../../../validator');
 
 const fundsRouter = express.Router();
 
-fundsRouter.post('/:organizationPk', [
+fundsRouter.post('/new', [
   ApiView.api,
   session.authenticateUser,
   Controller.createFund,
