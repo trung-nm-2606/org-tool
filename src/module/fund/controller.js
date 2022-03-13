@@ -20,7 +20,20 @@ Controller.createFund = async (req, res, next) => {
   next();
 };
 
-Controller.getFunds = async (req, res) => {};
+Controller.getFunds = async (req, res, next) => {
+  const { organizationPk } = req.params;
+  const { view: { resp } } = res.locals;
+
+  try {
+    const funds = await Dao.findFundsByOrganizationPk(organizationPk);
+    resp.setPayload(funds);
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
+};
 
 Controller.deleteFund = async (req, res) => {};
 
