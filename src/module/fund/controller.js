@@ -68,7 +68,20 @@ Controller.createFundEvent = async (req, res, next) => {
   next();
 };
 
-Controller.getFundEvents = async (req, res) => {};
+Controller.getFundEvents = async (req, res, next) => {
+  const { fundPk } = req.params;
+  const { view: { resp } } = res.locals;
+
+  try {
+    const fundEvents = await Dao.findFundEventsByFundPk(fundPk);
+    resp.setPayload(fundEvents);
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
+};
 
 Controller.archiveFundEvent = async (req, res) => {};
 
