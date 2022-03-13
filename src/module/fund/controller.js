@@ -83,9 +83,21 @@ Controller.getFundEvents = async (req, res, next) => {
   next();
 };
 
-Controller.archiveFundEvent = async (req, res) => {};
+Controller.archiveFundEvent = async (req, res, next) => {
+  const { fundPk } = req.params;
+  const { reason = '' } = req.body;
+  const { view: { resp } } = res.locals;
 
-Controller.cancelFundEvent = async (req, res) => {};
+  try {
+    await Dao.archiveFundEventByPk(fundPk, reason);
+    resp.setOperMessage(`Fund event archived successullfy`);
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
+};
 
 Controller.createTransaction = async (req, res) => {};
 

@@ -29,11 +29,4 @@ fundEventsRouter.put('/:fundPk/archive', [
   BaseController.render
 ]);
 
-fundEventsRouter.put('/:fundPk/cancel', [
-  ApiView.api,
-  session.authenticateUser,
-  Controller.cancelFundEvent,
-  BaseController.render
-]);
-
 module.exports = fundEventsRouter;

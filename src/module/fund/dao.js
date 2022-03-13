@@ -67,7 +67,7 @@ Dao.createFundEvent = async (fundPk, fundEvent, userPk) => {
 Dao.archiveFundEventByPk = async (fundEventPk, reason) => {
   try {
     const query = `update fund_events set status = 'archived', status_reason = ? where pk = ?`;
-    await db.execute(query, [fundEventPk, reason]);
+    await db.execute(query, [reason, fundEventPk]);
     return true;
   } catch (e) {
     throw new DaoError(`Cannot archive fund event(${fundEventPk})`, e);
