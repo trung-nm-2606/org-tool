@@ -35,7 +35,20 @@ Controller.getFunds = async (req, res, next) => {
   next();
 };
 
-Controller.deleteFund = async (req, res) => {};
+Controller.deleteFund = async (req, res, next) => {
+  const { fundPk } = req.params;
+  const { view: { resp } } = res.locals;
+
+  try {
+    await Dao.deleteFund(fundPk);
+    resp.setOperMessage(`Fund removed from group successullfy`);
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
+};
 
 Controller.createFundEvent = async (req, res) => {
   // Optionally create initial transactions for all members of the group to which the fund event belongs
