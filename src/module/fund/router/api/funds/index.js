@@ -22,10 +22,17 @@ fundsRouter.get('/:organizationPk/get-all', [
   BaseController.render
 ]);
 
-fundsRouter.delete('/:organizationPk/:fundPk/delete', [
+fundsRouter.delete('/:fundPk/delete', [
   ApiView.api,
   session.authenticateUser,
   Controller.deleteFund,
+  BaseController.render
+]);
+
+fundsRouter.post('/:fundPk/create-transaction', [
+  ApiView.api,
+  session.authenticateUser,
+  Controller.createTransaction,
   BaseController.render
 ]);
 
