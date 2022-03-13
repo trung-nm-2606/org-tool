@@ -1,6 +1,24 @@
+const session = require('../../shared/session');
+const Dao = require('./dao');
+
 const Controller = {};
 
-Controller.createFund = async (req, res) => {};
+Controller.createFund = async (req, res, next) => {
+  const { organizationPk } = req.params;
+  const { view: { resp } } = res.locals;
+  const authenticatedUser = session.getAuthenticatedUser(req);
+  const { name, description, currency = 'vnd'  } = req.body;
+
+  try {
+    await Dao.createFund(organizationPk, { name, description, currency }, authenticatedUser.pk);
+    resp.setPayload({ name, description, currency });
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
+};
 
 Controller.getFunds = async (req, res) => {};
 

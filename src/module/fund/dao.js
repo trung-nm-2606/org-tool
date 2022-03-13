@@ -1,5 +1,6 @@
 const db = require('../../shared/db');
 const dateUtils = require('../../shared/date_utils');
+const DaoError = require('../../model/error/DaoError');
 
 const Dao = {};
 
@@ -14,13 +15,13 @@ Dao.findFundsByOrganizationPk = async (origanizationPk) => {
 };
 
 Dao.createFund = async (origanizationPk, fund, userPk) => {
-  const { name, description, balance, currency  } = fund;
+  const { name, description, currency  } = fund;
 
   try {
-    const query = `insert into funds(name, description, organization_pk, balance, currency, created_by, updated_by)
-    values(?,?,?,?,?,?,?)`;
+    const query = `insert into funds(name, description, organization_pk, currency, created_by, updated_by)
+    values(?,?,?,?,?,?)`;
     const [result] = await db.execute(query, [
-      name, description, origanizationPk, balance, currency, userPk, userPk
+      name, description, origanizationPk, currency, userPk, userPk
     ])
     return result.insertId > 0;
   } catch (e) {
