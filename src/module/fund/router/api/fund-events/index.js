@@ -8,7 +8,7 @@ const Validator = require('../../../validator');
 
 const fundEventsRouter = express.Router();
 
-fundEventsRouter.post('/new', [
+fundEventsRouter.post('/:fundPk/new', [
   ApiView.api,
   session.authenticateUser,
   Controller.createFundEvent,

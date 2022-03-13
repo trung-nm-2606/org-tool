@@ -50,8 +50,22 @@ Controller.deleteFund = async (req, res, next) => {
   next();
 };
 
-Controller.createFundEvent = async (req, res) => {
+Controller.createFundEvent = async (req, res, next) => {
   // Optionally create initial transactions for all members of the group to which the fund event belongs
+  const { fundPk } = req.params;
+  const { view: { resp } } = res.locals;
+  const authenticatedUser = session.getAuthenticatedUser(req);
+  const { name, description, amountPerMember  } = req.body;
+
+  try {
+    await Dao.createFundEvent(fundPk, { name, description, amountPerMember }, authenticatedUser.pk);
+    resp.setPayload({ name, description, amountPerMember });
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  next();
 };
 
 Controller.getFundEvents = async (req, res) => {};
